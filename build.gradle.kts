@@ -17,6 +17,10 @@ dependencies {
     implementation("commons-io:commons-io:2.11.0")
     implementation("net.bramp.ffmpeg:ffmpeg:0.7.0")
 
+    implementation("org.slf4j:jul-to-slf4j:1.7.36")
+    implementation("org.slf4j:slf4j-api:1.7.36")
+    implementation("ch.qos.logback:logback-classic:1.2.11")
+
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     testImplementation("org.mockito:mockito-core:2.23.0")
     testImplementation("org.assertj:assertj-core:3.8.0")

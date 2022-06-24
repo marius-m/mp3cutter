@@ -1,5 +1,5 @@
-import org.assertj.core.api.Assertions
-import org.junit.jupiter.api.Assertions.*
+import lt.markmerkk.Mp3Cutter
+import lt.markmerkk.NameParser
 import org.junit.jupiter.api.Test
 import java.io.File
 

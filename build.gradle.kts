@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "lt.markmerkk"
-version = "1.0-SNAPSHOT"
+version = "1.0"
 
 repositories {
     mavenCentral()
@@ -36,5 +36,5 @@ tasks.withType<KotlinCompile> {
 }
 
 application {
-    mainClass.set("MainKt")
+    mainClass.set("lt.markmerkk.MainKt")
 }

@@ -1,8 +1,10 @@
+package lt.markmerkk
+
 import com.google.common.base.Preconditions
-import entities.TrackItem
-import entities.TrackItemLast
-import entities.TrackItemRegular
-import entities.TrackItemRaw
+import lt.markmerkk.entities.TrackItem
+import lt.markmerkk.entities.TrackItemLast
+import lt.markmerkk.entities.TrackItemRaw
+import lt.markmerkk.entities.TrackItemRegular
 import org.slf4j.LoggerFactory
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter

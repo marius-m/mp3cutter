@@ -1,6 +1,7 @@
-import entities.TrackItem
-import entities.TrackItemRegular
-import entities.TrackItemLast
+import lt.markmerkk.NameParser
+import lt.markmerkk.entities.TrackItem
+import lt.markmerkk.entities.TrackItemRegular
+import lt.markmerkk.entities.TrackItemLast
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import java.time.LocalTime

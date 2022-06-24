@@ -1,3 +1,5 @@
+package lt.markmerkk
+
 import com.google.common.base.Preconditions
 import kotlinx.cli.ArgParser
 import kotlinx.cli.ArgType
@@ -17,7 +19,7 @@ fun main(args: Array<String>) {
 
 class Main {
     fun main(args: Array<String>) {
-        val parser = ArgParser("mp3cut")
+        val parser = ArgParser("mp3cutter")
         val inputFilePathMap by parser.option(
             ArgType.String,
             fullName = "map",

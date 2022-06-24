@@ -1,8 +1,10 @@
+package lt.markmerkk
+
 import com.google.common.base.Preconditions
-import entities.TrackItem
-import entities.TrackItemLast
-import entities.TrackItemRaw
-import entities.TrackItemRegular
+import lt.markmerkk.entities.TrackItem
+import lt.markmerkk.entities.TrackItemLast
+import lt.markmerkk.entities.TrackItemRaw
+import lt.markmerkk.entities.TrackItemRegular
 import net.bramp.ffmpeg.FFmpeg
 import net.bramp.ffmpeg.FFmpegExecutor
 import net.bramp.ffmpeg.FFprobe

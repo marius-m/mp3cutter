@@ -1,4 +1,4 @@
-module lt.markmerkk.mp3cut.cli {
+module lt.markmerkk.mp3cutter {
     requires java.net.http;
     requires java.logging;
     requires com.google.common;

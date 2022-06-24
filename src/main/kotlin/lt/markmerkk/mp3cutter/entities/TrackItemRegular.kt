@@ -1,4 +1,4 @@
-package lt.markmerkk.entities
+package lt.markmerkk.mp3cutter.entities
 
 import java.time.LocalTime
 

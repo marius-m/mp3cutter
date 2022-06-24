@@ -1,10 +1,10 @@
-package lt.markmerkk
+package lt.markmerkk.mp3cutter
 
 import com.google.common.base.Preconditions
-import lt.markmerkk.entities.TrackItem
-import lt.markmerkk.entities.TrackItemLast
-import lt.markmerkk.entities.TrackItemRaw
-import lt.markmerkk.entities.TrackItemRegular
+import lt.markmerkk.mp3cutter.entities.TrackItem
+import lt.markmerkk.mp3cutter.entities.TrackItemLast
+import lt.markmerkk.mp3cutter.entities.TrackItemRaw
+import lt.markmerkk.mp3cutter.entities.TrackItemRegular
 import net.bramp.ffmpeg.FFmpeg
 import net.bramp.ffmpeg.FFmpegExecutor
 import net.bramp.ffmpeg.FFprobe

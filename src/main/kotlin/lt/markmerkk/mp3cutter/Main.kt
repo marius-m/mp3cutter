@@ -1,9 +1,10 @@
-package lt.markmerkk
+package lt.markmerkk.mp3cutter
 
 import com.google.common.base.Preconditions
 import kotlinx.cli.ArgParser
 import kotlinx.cli.ArgType
 import kotlinx.cli.required
+import lt.markmerkk.mp3cutter.NameParser
 import org.apache.commons.io.FileUtils
 import org.slf4j.LoggerFactory
 import org.slf4j.bridge.SLF4JBridgeHandler

@@ -1,5 +1,6 @@
-import lt.markmerkk.Mp3Cutter
-import lt.markmerkk.NameParser
+package lt.markmerkk.mp3cutter
+
+import TestUtils
 import org.junit.jupiter.api.Test
 import java.io.File
 

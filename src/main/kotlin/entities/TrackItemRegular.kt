@@ -2,7 +2,9 @@ package entities
 
 import java.time.LocalTime
 
-sealed class TrackItem
+sealed class TrackItem {
+    abstract val name: String
+}
 
 /**
  * Raw track data that has cut points
@@ -11,7 +13,9 @@ data class TrackItemRaw(
     val cut: LocalTime,
     val artist: String,
     val track: String,
-) : TrackItem()
+) : TrackItem() {
+    override val name: String = "$artist - $track"
+}
 
 /**
  * Regular track that has a start and an ending
@@ -22,6 +26,9 @@ data class TrackItemRegular(
     val artist: String,
     val track: String,
 ) : TrackItem() {
+
+    override val name: String = "$artist - $track"
+
     companion object {
         fun from(songCurrent: TrackItemRaw, songNext: TrackItemRaw): TrackItemRegular {
             return TrackItemRegular(
@@ -43,6 +50,9 @@ data class TrackItemLast(
     val artist: String,
     val track: String,
 ) : TrackItem() {
+
+    override val name: String = "$artist - $track"
+
     companion object {
         fun from(songCurrent: TrackItemRaw): TrackItemLast {
             return TrackItemLast(

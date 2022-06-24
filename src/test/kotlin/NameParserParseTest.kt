@@ -97,4 +97,19 @@ class NameParserParseTest {
             ),
         )
     }
+
+    @Test()
+    fun invalid_hasSameTitle() {
+        // Assemble
+        val rawInput = """
+0:00:00 Moo2 - Research1
+0:00:10 Moo2 - Research1
+        """.trimIndent()
+
+        // Act
+        // Assert
+        Assertions.assertThatThrownBy {
+            nameParser.parse(rawInput)
+        }
+    }
 }

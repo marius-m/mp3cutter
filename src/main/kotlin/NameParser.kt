@@ -1,7 +1,9 @@
+import com.google.common.base.Preconditions
 import entities.TrackItem
 import entities.TrackItemLast
 import entities.TrackItemRegular
 import entities.TrackItemRaw
+import org.slf4j.LoggerFactory
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
@@ -17,14 +19,16 @@ class NameParser(
             lineSeperator = nextLineSeparator,
             rawText = rawText,
         )
-        val songsRaw = parseLines(
+        val tracksRaw = parseLines(
             artistSongSeparator = artistSongSeparator,
             lines = lines,
         )
-        return songsRawToSongs(songsRaw)
+        val tracks = tracksRawToTracks(tracksRaw)
+        assertNoDuplicateNames(tracks)
+        return tracks
     }
 
-    private fun songsRawToSongs(
+    private fun tracksRawToTracks(
         songsRaw: List<TrackItemRaw>,
     ): List<TrackItem> {
         val tracks = mutableListOf<TrackItem>()
@@ -68,7 +72,15 @@ class NameParser(
         }
     }
 
+    @kotlin.jvm.Throws(IllegalArgumentException::class)
+    private fun assertNoDuplicateNames(tracks: List<TrackItem>) {
+        val hasDuplicates = tracks.size == tracks.distinctBy { it.name }.count()
+        Preconditions.checkArgument(hasDuplicates, "Found duplicates in track names")
+    }
+
     companion object {
+        private val l = LoggerFactory.getLogger(Mp3Cutter::class.java)
+
         const val DEFAULT_ARTIST_SONG_SEPARATOR = "-"
         const val DEFAULT_NEXT_LINE = "\n"
         const val DEFAULT_TIME_FORMAT = "H:mm:ss"

@@ -1,4 +1,4 @@
-<configuration debug="true" packagingData="true">
+<configuration debug="false" packagingData="false">
     <property name="LOG_PATH_DIR" value="${LOG_PATH}/app.log"/>
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <layout class="ch.qos.logback.classic.PatternLayout">

@@ -15,6 +15,7 @@ repositories {
 dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-cli:0.3.4")
     implementation("commons-io:commons-io:2.11.0")
+    implementation("net.bramp.ffmpeg:ffmpeg:0.7.0")
 
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     testImplementation("org.mockito:mockito-core:2.23.0")

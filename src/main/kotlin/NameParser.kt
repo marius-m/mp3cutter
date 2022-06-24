@@ -1,3 +1,7 @@
+import entities.TrackItem
+import entities.TrackItemLast
+import entities.TrackItemRegular
+import entities.TrackItemRaw
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
@@ -8,7 +12,7 @@ class NameParser(
 ) {
     private val timeFormatter = DateTimeFormatter.ofPattern(timeFormat)
 
-    fun parse(rawText: String): List<Song> {
+    fun parse(rawText: String): List<TrackItem> {
         val lines = splitLines(
             lineSeperator = nextLineSeparator,
             rawText = rawText,
@@ -21,24 +25,24 @@ class NameParser(
     }
 
     private fun songsRawToSongs(
-        songsRaw: List<SongRaw>,
-    ): List<Song> {
-        val songs = mutableListOf<Song>()
+        songsRaw: List<TrackItemRaw>,
+    ): List<TrackItem> {
+        val tracks = mutableListOf<TrackItem>()
         for (songIndex in songsRaw.indices) {
-            val songCurrent: SongRaw = songsRaw[songIndex]
+            val songCurrent: TrackItemRaw = songsRaw[songIndex]
             val songNextIndex = songIndex + 1
-            val songNext: SongRaw? = if (songNextIndex < songsRaw.size) {
+            val songNext: TrackItemRaw? = if (songNextIndex < songsRaw.size) {
                 songsRaw[songNextIndex]
             } else {
                 null
             }
             if (songNext != null) {
-                songs.add(Song.from(songCurrent, songNext))
+                tracks.add(TrackItemRegular.from(songCurrent, songNext))
             } else {
-                songs.add(Song.from(songCurrent, songCurrent))
+                tracks.add(TrackItemLast.from(songCurrent))
             }
         }
-        return songs.toList()
+        return tracks.toList()
     }
 
     private fun splitLines(
@@ -51,15 +55,15 @@ class NameParser(
     private fun parseLines(
         artistSongSeparator: String,
         lines: List<String>,
-    ): List<SongRaw> {
+    ): List<TrackItemRaw> {
         return lines.mapNotNull { line ->
             regexLine(songSeperator = artistSongSeparator)
                 .find(line)
         }.map { match ->
-            SongRaw(
+            TrackItemRaw(
                 cut = LocalTime.parse(match.groupValues[1], timeFormatter),
                 artist = match.groupValues[2].trim(),
-                song = match.groupValues[3].trim(),
+                track = match.groupValues[3].trim(),
             )
         }
     }
@@ -72,30 +76,6 @@ class NameParser(
         private fun regexLine(songSeperator: String): Regex {
             return "^([0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}) (.+)$songSeperator(.+)$"
                 .toRegex()
-        }
-    }
-}
-
-data class SongRaw(
-    val cut: LocalTime,
-    val artist: String,
-    val song: String,
-)
-
-data class Song(
-    val start: LocalTime,
-    val end: LocalTime,
-    val artist: String,
-    val song: String,
-) {
-    companion object {
-        fun from(songCurrent: SongRaw, songNext: SongRaw): Song {
-            return Song(
-                start = songCurrent.cut,
-                end = songNext.cut,
-                artist = songCurrent.artist,
-                song = songCurrent.song,
-            )
         }
     }
 }

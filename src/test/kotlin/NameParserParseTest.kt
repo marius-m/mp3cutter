@@ -1,22 +1,60 @@
+import entities.TrackItem
+import entities.TrackItemRegular
+import entities.TrackItemLast
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import java.time.LocalTime
-import kotlin.test.Ignore
 
 class NameParserParseTest {
 
     private val nameParser = NameParser()
 
-    //@Test
-    fun validLong() {
+    @Test
+    fun invalidEmpty() {
         // Assemble
-        val rawInput = TestUtils.loadContent("/sample_input_long.txt")
+        val rawInput = ""
 
         // Act
-        val result = nameParser.parse(rawInput)
+        val result: List<TrackItem> = nameParser.parse(rawInput)
 
         // Assert
-        Assertions.assertThat(result).isEqualTo(true)
+        Assertions.assertThat(result).isEmpty()
+    }
+
+    @Test
+    fun invalidMalformed() {
+        // Assemble
+        val rawInput = "asdf"
+
+        // Act
+        val result: List<TrackItem> = nameParser.parse(rawInput)
+
+        // Assert
+        Assertions.assertThat(result).isEmpty()
+    }
+
+    @Test
+    fun validExternalRes() {
+        // Assemble
+        val rawInput = TestUtils.loadContent("/sample_input_short.txt")
+
+        // Act
+        val result: List<TrackItem> = nameParser.parse(rawInput)
+
+        // Assert
+        Assertions.assertThat(result).containsExactly(
+            TrackItemRegular(
+                start = LocalTime.of(0, 0, 0),
+                end = LocalTime.of(0, 0, 10),
+                artist = "Moo2",
+                track = "Research1",
+            ),
+            TrackItemLast(
+                start = LocalTime.of(0, 0, 10),
+                artist = "Moo2",
+                track = "Research2",
+            ),
+        )
     }
 
     @Test
@@ -30,33 +68,32 @@ class NameParserParseTest {
         """.trimIndent()
 
         // Act
-        val result = nameParser.parse(rawInput)
+        val result: List<TrackItem> = nameParser.parse(rawInput)
 
         // Assert
         Assertions.assertThat(result).containsExactly(
-            Song(
+            TrackItemRegular(
                 start = LocalTime.of(0, 0, 0),
                 end = LocalTime.of(0, 5, 20),
                 artist = "San Holo",
-                song = "Show Me",
+                track = "Show Me",
             ),
-            Song(
+            TrackItemRegular(
                 start = LocalTime.of(0, 5, 20),
                 end = LocalTime.of(0, 8, 34),
                 artist = "Kasbo",
-                song = "Over You (feat. Frida Sundemo)",
+                track = "Over You (feat. Frida Sundemo)",
             ),
-            Song(
+            TrackItemRegular(
                 start = LocalTime.of(0, 8, 34),
                 end = LocalTime.of(0, 11, 24),
                 artist = "Raffaella",
-                song = "Bruce Willis",
+                track = "Bruce Willis",
             ),
-            Song(
+            TrackItemLast(
                 start = LocalTime.of(0, 11, 24),
-                end = LocalTime.of(0, 11, 24),
                 artist = "Kina",
-                song = "I'm In Love With You",
+                track = "I'm In Love With You",
             ),
         )
     }

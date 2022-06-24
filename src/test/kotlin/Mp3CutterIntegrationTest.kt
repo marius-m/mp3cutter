@@ -13,7 +13,7 @@ internal class Mp3CutterIntegrationTest {
         val tracksRawAsString = TestUtils.loadContent("/sample_input_test1.txt")
         val tracks = nameParser.parse(rawText = tracksRawAsString)
 
-        val inputFile = TestUtils.fileSource("/test1.mp3")
+        val inputFile = TestUtils.fileSource("/Garden-ambience-sound-effect.mp3")
         val outputDir = File("build/")
         val mp3Cutter = Mp3Cutter(
             inputFile = inputFile,
@@ -21,10 +21,9 @@ internal class Mp3CutterIntegrationTest {
         )
 
         // Act
-        val result = mp3Cutter.scan(inputFile = inputFile)
-        val result2 = mp3Cutter.cut(tracks = tracks)
+        val result = mp3Cutter.cut(tracks = tracks)
 
         // Assert
-        Assertions.assertThat(result).isEqualTo(true)
+        // Check results in 'build'
     }
 }

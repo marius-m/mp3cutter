@@ -27,18 +27,6 @@ class Mp3Cutter(
     private val ffprobe = FFprobe("/usr/local/bin/ffprobe")
     private val executor = FFmpegExecutor(ffmpeg, ffprobe)
 
-    fun scan(inputFile: File): FFmpegProbeResult {
-        val probeResult = ffprobe.probe(inputFile.absolutePath)
-        // val format: FFmpegFormat = probeResult.getFormat()
-        // System.out.format(
-        //     "%nFile: '%s' ; Format: '%s' ; Duration: %.3fs",
-        //     format.filename,
-        //     format.format_long_name,
-        //     format.duration
-        // )
-        return probeResult
-    }
-
     fun cut(
         tracks: List<TrackItem>,
     ) {

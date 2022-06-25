@@ -6,6 +6,7 @@ import java.time.Duration
 import java.time.LocalTime
 
 internal class TrackFilterStartTest {
+
     @Test
     fun valid() {
         // Assemble
@@ -43,10 +44,7 @@ internal class TrackFilterStartTest {
 
         // Assert
         Assertions.assertThat(result).isEqualTo(
-            TrackFilterStart(
-                startOffset = LocalTime.MIN,
-                duration = Duration.ofSeconds(0),
-            )
+            TrackFilterStart.asEmpty()
         )
     }
 
@@ -65,10 +63,7 @@ internal class TrackFilterStartTest {
 
         // Assert
         Assertions.assertThat(result).isEqualTo(
-            TrackFilterStart(
-                startOffset = LocalTime.MIN,
-                duration = Duration.ofSeconds(0),
-            )
+            TrackFilterStart.asEmpty()
         )
     }
 }

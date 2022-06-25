@@ -23,6 +23,12 @@ data class TrackFilterStart(
 ): TrackFilter() {
 
     companion object {
+        fun asEmpty(): TrackFilterStart {
+            return TrackFilterStart(
+                startOffset = LocalTime.MIN,
+                duration = Duration.ZERO,
+            )
+        }
         fun fromTrack(trackItem: TrackItemRegular): TrackFilterStart {
             return if (trackItem.duration > defaultDuration) {
                 return TrackFilterStart(
@@ -30,10 +36,7 @@ data class TrackFilterStart(
                     duration = defaultDuration,
                 )
             } else {
-                TrackFilterStart(
-                    startOffset = LocalTime.MIN,
-                    duration = Duration.ZERO,
-                )
+                return asEmpty()
             }
         }
     }
@@ -49,19 +52,22 @@ data class TrackFilterEnd(
 ): TrackFilter() {
 
     companion object {
+        fun asEmpty(): TrackFilterEnd {
+            return TrackFilterEnd(
+                startOffset = LocalTime.MIN,
+                duration = Duration.ZERO,
+            )
+        }
         fun fromTrack(trackItem: TrackItemRegular): TrackFilterEnd {
-            return if (trackItem.duration > defaultDuration) {
-                val filterStartOffset = trackItem.startOffset
-                    .minusSeconds(defaultDuration.toSeconds())
+            val timeEnd = trackItem.startOffset
+                .plusSeconds(trackItem.duration.seconds)
+            return if (timeEnd.toSecondOfDay() > defaultDuration.seconds) {
                 TrackFilterEnd(
-                    startOffset = filterStartOffset,
+                    startOffset = timeEnd.minusSeconds(defaultDuration.seconds),
                     duration = defaultDuration,
                 )
             } else {
-                TrackFilterEnd(
-                    startOffset = LocalTime.MIN,
-                    duration = Duration.ZERO,
-                )
+                asEmpty()
             }
         }
     }

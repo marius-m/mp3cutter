@@ -23,7 +23,7 @@ internal class TrackFilterEndTest {
         // Assert
         Assertions.assertThat(result).isEqualTo(
             TrackFilterEnd(
-                startOffset = LocalTime.of(0, 9, 57),
+                startOffset = LocalTime.of(0, 10, 57),
                 duration = Duration.ofSeconds(TrackFilter.DEFAULT_FILTER_SEC.toLong()),
             )
         )
@@ -45,7 +45,7 @@ internal class TrackFilterEndTest {
         // Assert
         Assertions.assertThat(result).isEqualTo(
             TrackFilterEnd(
-                startOffset = LocalTime.of(0, 0, 0),
+                startOffset = LocalTime.of(0, 0, 7),
                 duration = Duration.ofSeconds(TrackFilter.DEFAULT_FILTER_SEC.toLong()),
             )
         )
@@ -55,7 +55,7 @@ internal class TrackFilterEndTest {
     fun shortDuration_shorterThanDefault() {
         // Assemble
         val trackItem = TrackItemRegular(
-            startOffset = LocalTime.of(0, 10, 0),
+            startOffset = LocalTime.of(0, 0, 0),
             duration = Duration.ofSeconds(2),
             artist = "Moo",
             track = "Research1",

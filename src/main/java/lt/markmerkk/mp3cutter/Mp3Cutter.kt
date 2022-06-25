@@ -1,6 +1,8 @@
 package lt.markmerkk.mp3cutter
 
 import com.google.common.base.Preconditions
+import lt.markmerkk.mp3cutter.entities.TrackFilterEnd
+import lt.markmerkk.mp3cutter.entities.TrackFilterStart
 import lt.markmerkk.mp3cutter.entities.TrackItem
 import lt.markmerkk.mp3cutter.entities.TrackItemLast
 import lt.markmerkk.mp3cutter.entities.TrackItemRaw
@@ -67,21 +69,33 @@ class Mp3Cutter(
             LocalTime.MIN,
             track.startOffset,
         )
+        val filterStart = TrackFilterStart.fromTrack(track)
+        val filterEnd = TrackFilterEnd.fromTrack(track)
         return toFFmpegJob(
             ffProbeResult = ffProbeResult,
             targetOutput = targetOutput,
             offsetStart = durationRangeStart,
             duration = track.duration,
+            filterStart = filterStart,
+            filterEnd = filterEnd,
         )
     }
 
     private fun toFFmpegJob(
-        useFade: Boolean = false,
         ffProbeResult: FFmpegProbeResult,
         targetOutput: File,
         offsetStart: Duration,
         duration: Duration,
+        filterStart: TrackFilterStart,
+        filterEnd: TrackFilterEnd,
     ): FFmpegJob {
+        val filterString = "afade=t=in:st=%d:d=%d,afade=t=out:st=%d:d=%d"
+            .format(
+                filterStart.startOffset.toSecondOfDay(),
+                filterStart.duration.toSeconds(),
+                filterEnd.startOffset.toSecondOfDay(),
+                filterStart.duration.toSeconds(),
+            )
         val builder: FFmpegBuilder = FFmpegBuilder()
             .setInput(ffProbeResult)
             .addOutput(targetOutput.absolutePath)
@@ -89,9 +103,8 @@ class Mp3Cutter(
             .setFilename(targetOutput.absolutePath)
             .setStartOffset(offsetStart.toMillis(), TimeUnit.MILLISECONDS)
             .setDuration(duration.toMillis(), TimeUnit.MILLISECONDS)
-            .setAudioFilter("afade=t=in:st=0:d=5,afade=t=out:st=5:d=5")
-            .setVideoCodec("copy")
-            .setAudioCodec("copy")
+            .setAudioFilter(filterString)
+            //.setAudioCodec("copy")
             .done()
         return executor.createJob(builder)
     }

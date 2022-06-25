@@ -6,6 +6,7 @@ import lt.markmerkk.mp3cutter.entities.TrackItemRegular
 import lt.markmerkk.mp3cutter.entities.TrackItemLast
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
+import java.time.Duration
 import java.time.LocalTime
 
 class NameParserParseTest {
@@ -47,13 +48,13 @@ class NameParserParseTest {
         // Assert
         Assertions.assertThat(result).containsExactly(
             TrackItemRegular(
-                start = LocalTime.of(0, 0, 0),
-                end = LocalTime.of(0, 0, 10),
+                startOffset = LocalTime.of(0, 0, 0),
+                duration = Duration.ofSeconds(10),
                 artist = "Moo2",
                 track = "Research1",
             ),
             TrackItemLast(
-                start = LocalTime.of(0, 0, 10),
+                startOffset = LocalTime.of(0, 0, 10),
                 artist = "Moo2",
                 track = "Research2",
             ),
@@ -76,25 +77,25 @@ class NameParserParseTest {
         // Assert
         Assertions.assertThat(result).containsExactly(
             TrackItemRegular(
-                start = LocalTime.of(0, 0, 0),
-                end = LocalTime.of(0, 5, 20),
+                startOffset = LocalTime.of(0, 0, 0),
+                duration = Duration.ofSeconds(320),
                 artist = "San Holo",
                 track = "Show Me",
             ),
             TrackItemRegular(
-                start = LocalTime.of(0, 5, 20),
-                end = LocalTime.of(0, 8, 34),
+                startOffset = LocalTime.of(0, 5, 20),
+                duration = Duration.ofSeconds(194),
                 artist = "Kasbo",
                 track = "Over You (feat. Frida Sundemo)",
             ),
             TrackItemRegular(
-                start = LocalTime.of(0, 8, 34),
-                end = LocalTime.of(0, 11, 24),
+                startOffset = LocalTime.of(0, 8, 34),
+                duration = Duration.ofSeconds(170),
                 artist = "Raffaella",
                 track = "Bruce Willis",
             ),
             TrackItemLast(
-                start = LocalTime.of(0, 11, 24),
+                startOffset = LocalTime.of(0, 11, 24),
                 artist = "Kina",
                 track = "I'm In Love With You",
             ),

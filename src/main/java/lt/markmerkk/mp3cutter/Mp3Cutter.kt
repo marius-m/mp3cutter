@@ -45,8 +45,13 @@ class Mp3Cutter(
         val cutJobs = tracks
             .map { track ->
                 when (track) {
-                    is TrackItemRaw -> throw IllegalStateException("Cannot convert TrackItemRaw")
-                    is TrackItemLast -> convertTrackLast(ffProbeResult, track)
+                    is TrackItemLast -> {
+                        val regularFromLast = TrackItemRegular.fromLastWithMaxDuration(
+                            trackLast = track,
+                            maxDuration = Duration.ofSeconds(ffProbeResult.format.duration.toLong()),
+                        )
+                        convertTrackRegular(ffProbeResult, regularFromLast)
+                    }
                     is TrackItemRegular -> convertTrackRegular(ffProbeResult, track)
                 }
             }
@@ -60,39 +65,18 @@ class Mp3Cutter(
         val targetOutput = File(outputDir, "${track.name}.mp3")
         val durationRangeStart = Duration.between(
             LocalTime.MIN,
-            track.start,
-        )
-        val durationRangeEnd = Duration.between(
-            track.start,
-            track.end,
+            track.startOffset,
         )
         return toFFmpegJob(
             ffProbeResult = ffProbeResult,
             targetOutput = targetOutput,
             offsetStart = durationRangeStart,
-            duration = durationRangeEnd,
-        )
-    }
-
-    private fun convertTrackLast(
-        ffProbeResult: FFmpegProbeResult,
-        track: TrackItemLast,
-    ): FFmpegJob {
-        val targetOutput = File(outputDir, "${track.name}.mp3")
-        val durationRangeStart = Duration.between(
-            LocalTime.MIN,
-            track.start,
-        )
-        val durationRangeEnd = Duration.ofSeconds(ffProbeResult.format.duration.toLong())
-        return toFFmpegJob(
-            ffProbeResult = ffProbeResult,
-            targetOutput = targetOutput,
-            offsetStart = durationRangeStart,
-            duration = durationRangeEnd,
+            duration = track.duration,
         )
     }
 
     private fun toFFmpegJob(
+        useFade: Boolean = false,
         ffProbeResult: FFmpegProbeResult,
         targetOutput: File,
         offsetStart: Duration,
@@ -105,6 +89,7 @@ class Mp3Cutter(
             .setFilename(targetOutput.absolutePath)
             .setStartOffset(offsetStart.toMillis(), TimeUnit.MILLISECONDS)
             .setDuration(duration.toMillis(), TimeUnit.MILLISECONDS)
+            .setAudioFilter("afade=t=in:st=0:d=5,afade=t=out:st=5:d=5")
             .setVideoCodec("copy")
             .setAudioCodec("copy")
             .done()

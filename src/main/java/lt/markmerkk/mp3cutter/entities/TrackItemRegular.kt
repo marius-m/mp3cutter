@@ -7,7 +7,8 @@ import java.time.LocalTime
  * Raw track data that has cut points
  */
 data class TrackItemRaw(
-    val cut: LocalTime,
+    val cutStart: LocalTime,
+    val cutEnd: LocalTime?,
     val artist: String,
     val track: String,
 ) {
@@ -33,8 +34,8 @@ data class TrackItemRegular(
     companion object {
         fun from(trackCurrent: TrackItemRaw, trackNext: TrackItemRaw): TrackItemRegular {
             return TrackItemRegular(
-                startOffset = trackCurrent.cut,
-                duration = Duration.between(trackCurrent.cut, trackNext.cut),
+                startOffset = trackCurrent.cutStart,
+                duration = Duration.between(trackCurrent.cutStart, trackNext.cutStart),
                 artist = trackCurrent.artist,
                 track = trackCurrent.track,
             )
@@ -69,7 +70,7 @@ data class TrackItemLast(
     companion object {
         fun from(songCurrent: TrackItemRaw): TrackItemLast {
             return TrackItemLast(
-                startOffset = songCurrent.cut,
+                startOffset = songCurrent.cutStart,
                 artist = songCurrent.artist,
                 track = songCurrent.track,
             )

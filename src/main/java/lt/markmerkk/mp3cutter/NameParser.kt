@@ -7,14 +7,11 @@ import lt.markmerkk.mp3cutter.entities.TrackItemRaw
 import lt.markmerkk.mp3cutter.entities.TrackItemRegular
 import org.slf4j.LoggerFactory
 import java.time.LocalTime
-import java.time.format.DateTimeFormatter
 
 class NameParser(
-    private val artistSongSeparator: String = DEFAULT_ARTIST_SONG_SEPARATOR,
+    private val artistTrackSeparator: String = DEFAULT_ARTIST_SONG_SEPARATOR,
     private val nextLineSeparator: String = DEFAULT_NEXT_LINE,
-    private val timeFormat: String = DEFAULT_TIME_FORMAT,
 ) {
-    private val timeFormatter = DateTimeFormatter.ofPattern(timeFormat)
 
     fun parse(rawText: String): List<TrackItem> {
         val lines = splitLines(
@@ -22,7 +19,7 @@ class NameParser(
             rawText = rawText,
         )
         val tracksRaw = parseLines(
-            artistSongSeparator = artistSongSeparator,
+            artistTrackSeparator = artistTrackSeparator,
             lines = lines,
         )
         val tracks = tracksRawToTracks(tracksRaw)
@@ -59,20 +56,17 @@ class NameParser(
     }
 
     private fun parseLines(
-        artistSongSeparator: String,
+        artistTrackSeparator: String,
         lines: List<String>,
     ): List<TrackItemRaw> {
         return lines.mapNotNull { line ->
-            regexLine(songSeperator = artistSongSeparator)
-                .find(line)
-        }.map { match ->
-            TrackItemRaw(
-                cut = LocalTime.parse(match.groupValues[1], timeFormatter),
-                artist = match.groupValues[2].trim(),
-                track = match.groupValues[3].trim(),
+            parseLine(
+                artistTrackSeparator = artistTrackSeparator,
+                rawLine = line,
             )
         }
     }
+
 
     @kotlin.jvm.Throws(IllegalArgumentException::class)
     private fun assertNoDuplicateNames(tracks: List<TrackItem>) {
@@ -85,10 +79,34 @@ class NameParser(
 
         const val DEFAULT_ARTIST_SONG_SEPARATOR = "-"
         const val DEFAULT_NEXT_LINE = "\n"
-        const val DEFAULT_TIME_FORMAT = "H:mm:ss"
 
-        private fun regexLine(songSeperator: String): Regex {
-            return "^([0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}) (.+)$songSeperator(.+)$"
+        private val regexTime = "\\d{1,2}?:?\\d{1,2}:\\d{1,2}"
+            .toRegex()
+
+        fun parseLine(
+            artistTrackSeparator: String,
+            rawLine: String,
+        ): TrackItemRaw? {
+            val match = regexLine(songSeperator = artistTrackSeparator)
+                .find(rawLine)
+            if (match != null) {
+                val cutStart = TimeUtils.parseTime(match.groupValues[1].trim())!!
+                val cutEnd = TimeUtils.parseTime(match.groupValues[2].trim())
+                if (cutEnd != null && cutEnd.isBefore(cutStart)) {
+                    return null
+                }
+                return TrackItemRaw(
+                    cutStart = cutStart,
+                    cutEnd = cutEnd,
+                    artist = match.groupValues[3].trim(),
+                    track = match.groupValues[4].trim(),
+                )
+            }
+            return null
+        }
+
+        fun regexLine(songSeperator: String): Regex {
+            return "^(${regexTime.pattern})( ${regexTime.pattern})? (.+)$songSeperator(.+)$"
                 .toRegex()
         }
     }

@@ -67,7 +67,6 @@ class NameParserParseTest {
         val rawInput = """
             0:00:00 San Holo - Show Me
             0:05:20 Kasbo - Over You (feat. Frida Sundemo)
-            0:08:34 Raffaella - Bruce Willis
             0:11:24 Kina - I'm In Love With You
         """.trimIndent()
 
@@ -84,15 +83,9 @@ class NameParserParseTest {
             ),
             TrackItemRegular(
                 startOffset = LocalTime.of(0, 5, 20),
-                duration = Duration.ofSeconds(194),
+                duration = Duration.ofSeconds(364),
                 artist = "Kasbo",
                 track = "Over You (feat. Frida Sundemo)",
-            ),
-            TrackItemRegular(
-                startOffset = LocalTime.of(0, 8, 34),
-                duration = Duration.ofSeconds(170),
-                artist = "Raffaella",
-                track = "Bruce Willis",
             ),
             TrackItemLast(
                 startOffset = LocalTime.of(0, 11, 24),

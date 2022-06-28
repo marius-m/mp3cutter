@@ -104,7 +104,6 @@ class Mp3Cutter(
             .setStartOffset(offsetStart.toMillis(), TimeUnit.MILLISECONDS)
             .setDuration(duration.toMillis(), TimeUnit.MILLISECONDS)
             .setAudioFilter(filterString)
-            //.setAudioCodec("copy")
             .done()
         return executor.createJob(builder)
     }

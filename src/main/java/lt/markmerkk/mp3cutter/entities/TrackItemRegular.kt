@@ -33,6 +33,8 @@ data class TrackItemRegular(
 
     private val end = startOffset.plusSeconds(duration.toSeconds())
 
+
+
     companion object {
         fun withStartEnd(
             start: LocalTime,
@@ -73,6 +75,17 @@ data class TrackItemRegular(
                 track = trackLast.track,
             )
         }
+    }
+
+    override fun toString(): String {
+        return "TrackItemRegular(" +
+            "startOffset=$startOffset," +
+            " duration=$duration," +
+            " artist='$artist'," +
+            " track='$track'," +
+            " name='$name'," +
+            " end=$end" +
+            ")"
     }
 }
 

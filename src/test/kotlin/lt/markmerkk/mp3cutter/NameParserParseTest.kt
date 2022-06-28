@@ -75,20 +75,55 @@ class NameParserParseTest {
 
         // Assert
         Assertions.assertThat(result).containsExactly(
-            TrackItemRegular(
-                startOffset = LocalTime.of(0, 0, 0),
-                duration = Duration.ofSeconds(320),
+            TrackItemRegular.withStartEnd(
+                start = LocalTime.of(0, 0, 0),
+                end = LocalTime.of(0, 5, 20),
                 artist = "San Holo",
                 track = "Show Me",
             ),
-            TrackItemRegular(
-                startOffset = LocalTime.of(0, 5, 20),
-                duration = Duration.ofSeconds(364),
+            TrackItemRegular.withStartEnd(
+                start = LocalTime.of(0, 5, 20),
+                end = LocalTime.of(0, 11, 24),
                 artist = "Kasbo",
                 track = "Over You (feat. Frida Sundemo)",
             ),
             TrackItemLast(
                 startOffset = LocalTime.of(0, 11, 24),
+                artist = "Kina",
+                track = "I'm In Love With You",
+            ),
+        )
+    }
+
+    @Test
+    fun valid_hasEndCuts() {
+        // Assemble
+        val rawInput = """
+            00:00 03:30 San Holo - Show Me
+            05:20 06:00 Kasbo - Over You (feat. Frida Sundemo)
+            09:24 10:31 Kina - I'm In Love With You
+        """.trimIndent()
+
+        // Act
+        val result: List<TrackItem> = nameParser.parse(rawInput)
+
+        // Assert
+        Assertions.assertThat(result).containsExactly(
+            TrackItemRegular.withStartEnd(
+                start = LocalTime.of(0, 0, 0),
+                end = LocalTime.of(0, 3, 30),
+                artist = "San Holo",
+                track = "Show Me",
+            ),
+            TrackItemRegular.withStartEnd(
+                start = LocalTime.of(0, 5, 20),
+                end = LocalTime.of(0, 6, 0),
+                artist = "Kasbo",
+                track = "Over You (feat. Frida Sundemo)",
+            ),
+            TrackItemRegular.withStartEnd(
+                start = LocalTime.of(0, 9, 24),
+                end = LocalTime.of(0, 10, 31),
                 artist = "Kina",
                 track = "I'm In Love With You",
             ),

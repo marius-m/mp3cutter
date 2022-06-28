@@ -31,11 +31,32 @@ data class TrackItemRegular(
 
     override val name: String = "$artist - $track"
 
+    private val end = startOffset.plusSeconds(duration.toSeconds())
+
     companion object {
+        fun withStartEnd(
+            start: LocalTime,
+            end: LocalTime,
+            artist: String,
+            track: String,
+        ): TrackItemRegular {
+            return TrackItemRegular(
+                startOffset = start,
+                duration = Duration.between(start, end),
+                artist = artist,
+                track = track,
+            )
+        }
+
         fun from(trackCurrent: TrackItemRaw, trackNext: TrackItemRaw): TrackItemRegular {
+            val trackDuration = if (trackCurrent.cutEnd != null) {
+                Duration.between(trackCurrent.cutStart, trackCurrent.cutEnd)
+            } else {
+                Duration.between(trackCurrent.cutStart, trackNext.cutStart)
+            }
             return TrackItemRegular(
                 startOffset = trackCurrent.cutStart,
-                duration = Duration.between(trackCurrent.cutStart, trackNext.cutStart),
+                duration = trackDuration,
                 artist = trackCurrent.artist,
                 track = trackCurrent.track,
             )

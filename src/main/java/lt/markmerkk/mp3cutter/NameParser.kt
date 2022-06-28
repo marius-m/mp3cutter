@@ -6,7 +6,6 @@ import lt.markmerkk.mp3cutter.entities.TrackItemLast
 import lt.markmerkk.mp3cutter.entities.TrackItemRaw
 import lt.markmerkk.mp3cutter.entities.TrackItemRegular
 import org.slf4j.LoggerFactory
-import java.time.LocalTime
 
 class NameParser(
     private val artistTrackSeparator: String = DEFAULT_ARTIST_SONG_SEPARATOR,
@@ -28,22 +27,28 @@ class NameParser(
     }
 
     private fun tracksRawToTracks(
-        songsRaw: List<TrackItemRaw>,
+        trackRaw: List<TrackItemRaw>,
     ): List<TrackItem> {
         val tracks = mutableListOf<TrackItem>()
-        for (songIndex in songsRaw.indices) {
-            val songCurrent: TrackItemRaw = songsRaw[songIndex]
-            val songNextIndex = songIndex + 1
-            val songNext: TrackItemRaw? = if (songNextIndex < songsRaw.size) {
-                songsRaw[songNextIndex]
+        for (trackIndex in trackRaw.indices) {
+            val trackCurrent: TrackItemRaw = trackRaw[trackIndex]
+            val trackNextIndex = trackIndex + 1
+            val trackNext: TrackItemRaw? = if (trackNextIndex < trackRaw.size) {
+                trackRaw[trackNextIndex]
             } else {
                 null
             }
-            if (songNext != null) {
-                tracks.add(TrackItemRegular.from(songCurrent, songNext))
-            } else {
-                tracks.add(TrackItemLast.from(songCurrent))
+            val trackItem: TrackItem = when {
+                trackCurrent.cutEnd != null -> TrackItemRegular.withStartEnd(
+                    start = trackCurrent.cutStart,
+                    end = trackCurrent.cutEnd,
+                    artist = trackCurrent.artist,
+                    track = trackCurrent.track,
+                )
+                trackNext != null -> TrackItemRegular.from(trackCurrent, trackNext)
+                else -> TrackItemLast.from(trackCurrent)
             }
+            tracks.add(trackItem)
         }
         return tracks.toList()
     }

@@ -7,6 +7,8 @@ import java.time.LocalTime
 
 internal class TrackFilterEndTest {
 
+    private val filterDuration = Duration.ofSeconds(5)
+
     @Test
     fun valid() {
         // Assemble
@@ -18,13 +20,13 @@ internal class TrackFilterEndTest {
         )
 
         // Act
-        val result = TrackFilterEnd.fromTrack(trackItem)
+        val result = TrackFilterEnd.fromTrack(trackItem, filterDuration)
 
         // Assert
         Assertions.assertThat(result).isEqualTo(
             TrackFilterEnd(
-                startOffset = LocalTime.of(0, 10, 57),
-                duration = Duration.ofSeconds(TrackFilter.DEFAULT_FILTER_SEC.toLong()),
+                startOffset = LocalTime.of(0, 10, 55),
+                duration = filterDuration,
             )
         )
     }
@@ -40,13 +42,13 @@ internal class TrackFilterEndTest {
         )
 
         // Act
-        val result = TrackFilterEnd.fromTrack(trackItem)
+        val result = TrackFilterEnd.fromTrack(trackItem, filterDuration)
 
         // Assert
         Assertions.assertThat(result).isEqualTo(
             TrackFilterEnd(
-                startOffset = LocalTime.of(0, 0, 7),
-                duration = Duration.ofSeconds(TrackFilter.DEFAULT_FILTER_SEC.toLong()),
+                startOffset = LocalTime.of(0, 0, 5),
+                duration = filterDuration,
             )
         )
     }
@@ -62,7 +64,7 @@ internal class TrackFilterEndTest {
         )
 
         // Act
-        val result = TrackFilterEnd.fromTrack(trackItem)
+        val result = TrackFilterEnd.fromTrack(trackItem, filterDuration)
 
         // Assert
         Assertions.assertThat(result).isEqualTo(

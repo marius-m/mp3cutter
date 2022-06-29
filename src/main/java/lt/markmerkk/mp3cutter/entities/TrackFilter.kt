@@ -29,14 +29,17 @@ data class TrackFilterStart(
                 duration = Duration.ZERO,
             )
         }
-        fun fromTrack(trackItem: TrackItemRegular): TrackFilterStart {
-            return if (trackItem.duration > defaultDuration) {
-                return TrackFilterStart(
-                    startOffset = LocalTime.MIN,
-                    duration = defaultDuration,
+        fun fromTrack(
+            trackItem: TrackItemRegular,
+            filterDuration: Duration = defaultDuration,
+        ): TrackFilterStart {
+            return if (trackItem.duration > filterDuration) {
+                TrackFilterStart(
+                    startOffset = trackItem.startOffset,
+                    duration = filterDuration,
                 )
             } else {
-                return asEmpty()
+                asEmpty()
             }
         }
     }
@@ -58,13 +61,16 @@ data class TrackFilterEnd(
                 duration = Duration.ZERO,
             )
         }
-        fun fromTrack(trackItem: TrackItemRegular): TrackFilterEnd {
+        fun fromTrack(
+            trackItem: TrackItemRegular,
+            filterDuration: Duration = defaultDuration,
+        ): TrackFilterEnd {
             val timeEnd = trackItem.startOffset
                 .plusSeconds(trackItem.duration.seconds)
-            return if (timeEnd.toSecondOfDay() > defaultDuration.seconds) {
+            return if (timeEnd.toSecondOfDay() > filterDuration.seconds) {
                 TrackFilterEnd(
-                    startOffset = timeEnd.minusSeconds(defaultDuration.seconds),
-                    duration = defaultDuration,
+                    startOffset = timeEnd.minusSeconds(filterDuration.seconds),
+                    duration = filterDuration,
                 )
             } else {
                 asEmpty()

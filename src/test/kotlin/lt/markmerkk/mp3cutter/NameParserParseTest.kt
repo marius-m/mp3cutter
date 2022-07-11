@@ -144,4 +144,31 @@ class NameParserParseTest {
             nameParser.parse(rawInput)
         }
     }
+
+    @Test
+    fun valid_invalidChar() {
+        // Assemble
+        val rawInput = """
+            0:05:20 Test1/Test123 - Test2
+            0:11:24 Kina/Research - Research1
+        """.trimIndent()
+
+        // Act
+        val result: List<TrackItem> = nameParser.parse(rawInput)
+
+        // Assert
+        Assertions.assertThat(result).containsExactly(
+            TrackItemRegular.withStartEnd(
+                start = LocalTime.of(0, 5, 20),
+                end = LocalTime.of(0, 11, 24),
+                artist = "Test1Test123",
+                track = "Test2",
+            ),
+            TrackItemLast(
+                startOffset = LocalTime.of(0, 11, 24),
+                artist = "KinaResearch",
+                track = "Research1",
+            ),
+        )
+    }
 }

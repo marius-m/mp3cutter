@@ -4,7 +4,6 @@ import lt.markmerkk.mp3cutter.entities.TrackItemRaw
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import java.time.LocalTime
-import java.time.format.DateTimeFormatter
 
 class NameParserRegexLineTest {
 
@@ -177,5 +176,27 @@ class NameParserRegexLineTest {
 
         // Assert
         Assertions.assertThat(result).isNull()
+    }
+
+    @Test
+    fun valid_customChars() {
+        // Assemble
+        val rawInput = "01:52:31 San Holo/Test1 - Show Me (Feat. Test1)"
+
+        // Act
+        val result = NameParser.parseLine(
+            artistTrackSeparator = artistTrackSeparator,
+            rawLine = rawInput,
+        )
+
+        // Assert
+        Assertions.assertThat(result).isEqualTo(
+            TrackItemRaw(
+                cutStart = LocalTime.of(1, 52, 31),
+                cutEnd = null,
+                artist = "San HoloTest1",
+                track = "Show Me (Feat. Test1)",
+            ),
+        )
     }
 }

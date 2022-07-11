@@ -87,6 +87,7 @@ class NameParser(
 
         private val regexTime = "\\d{1,2}?:?\\d{1,2}:\\d{1,2}"
             .toRegex()
+        private val regexValidChars = "[A-Za-z0-9(),.'\" ]+".toRegex()
 
         fun parseLine(
             artistTrackSeparator: String,
@@ -103,11 +104,17 @@ class NameParser(
                 return TrackItemRaw(
                     cutStart = cutStart,
                     cutEnd = cutEnd,
-                    artist = match.groupValues[3].trim(),
-                    track = match.groupValues[4].trim(),
+                    artist = sanitizeTitle(match.groupValues[3].trim()),
+                    track = sanitizeTitle(match.groupValues[4].trim()),
                 )
             }
             return null
+        }
+
+        fun sanitizeTitle(rawTitle: String): String {
+            return regexValidChars.findAll(rawTitle)
+                .map { it.groupValues[0] }
+                .joinToString(separator = "")
         }
 
         fun regexLine(songSeperator: String): Regex {

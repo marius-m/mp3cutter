@@ -3,7 +3,9 @@ package lt.markmerkk.mp3cutter
 import TestUtils
 import org.junit.jupiter.api.Test
 import java.io.File
+import kotlin.test.Ignore
 
+@Ignore
 internal class Mp3CutterIntegrationTest {
 
     private val nameParser = NameParser()

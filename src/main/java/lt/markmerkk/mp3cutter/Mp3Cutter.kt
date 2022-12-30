@@ -27,8 +27,9 @@ class Mp3Cutter(
         Preconditions.checkArgument(outputDir.isDirectory)
     }
 
-    private val ffmpeg = FFmpeg("/usr/local/bin/ffmpeg")
-    private val ffprobe = FFprobe("/usr/local/bin/ffprobe")
+    private val rootPath = "/opt/homebrew/bin"
+    private val ffmpeg = FFmpeg("${rootPath}/ffmpeg")
+    private val ffprobe = FFprobe("${rootPath}/ffprobe")
     private val executor = FFmpegExecutor(ffmpeg, ffprobe)
 
     fun cut(

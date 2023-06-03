@@ -40,13 +40,21 @@ class NameParser(
             }
             val trackItem: TrackItem = when {
                 trackCurrent.cutEnd != null -> TrackItemRegular.withStartEnd(
+                    index = trackIndex,
                     start = trackCurrent.cutStart,
                     end = trackCurrent.cutEnd,
                     artist = trackCurrent.artist,
                     track = trackCurrent.track,
                 )
-                trackNext != null -> TrackItemRegular.from(trackCurrent, trackNext)
-                else -> TrackItemLast.from(trackCurrent)
+                trackNext != null -> TrackItemRegular.from(
+                    index = trackIndex,
+                    trackCurrent = trackCurrent,
+                    trackNext = trackNext,
+                )
+                else -> TrackItemLast.from(
+                    index = trackIndex,
+                    songCurrent = trackCurrent,
+                )
             }
             tracks.add(trackItem)
         }

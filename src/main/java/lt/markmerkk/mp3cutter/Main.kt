@@ -32,13 +32,13 @@ class Main {
             fullName = "track",
             shortName = "t",
             description = "Input mp3 track file which will be used for cutting",
-        )
+        ).required()
         val outputDirPath by parser.option(
             ArgType.String,
             fullName = "output",
             shortName = "o",
             description = "Output directory where to put extracted files",
-        )
+        ).required()
         val _isDryRun by parser.option(
             ArgType.Boolean,
             fullName = "dry-run",

@@ -16,6 +16,7 @@ data class TrackItemRaw(
 }
 
 sealed class TrackItem {
+    abstract val index: Int
     abstract val name: String
 }
 
@@ -23,6 +24,7 @@ sealed class TrackItem {
  * Regular track that has a start and an ending
  */
 data class TrackItemRegular(
+    override val index: Int,
     val startOffset: LocalTime,
     val duration: Duration,
     val artist: String,
@@ -33,16 +35,16 @@ data class TrackItemRegular(
 
     private val end = startOffset.plusSeconds(duration.toSeconds())
 
-
-
     companion object {
         fun withStartEnd(
+            index: Int,
             start: LocalTime,
             end: LocalTime,
             artist: String,
             track: String,
         ): TrackItemRegular {
             return TrackItemRegular(
+                index = index,
                 startOffset = start,
                 duration = Duration.between(start, end),
                 artist = artist,
@@ -50,13 +52,18 @@ data class TrackItemRegular(
             )
         }
 
-        fun from(trackCurrent: TrackItemRaw, trackNext: TrackItemRaw): TrackItemRegular {
+        fun from(
+            index: Int,
+            trackCurrent: TrackItemRaw,
+            trackNext: TrackItemRaw,
+        ): TrackItemRegular {
             val trackDuration = if (trackCurrent.cutEnd != null) {
                 Duration.between(trackCurrent.cutStart, trackCurrent.cutEnd)
             } else {
                 Duration.between(trackCurrent.cutStart, trackNext.cutStart)
             }
             return TrackItemRegular(
+                index = index,
                 startOffset = trackCurrent.cutStart,
                 duration = trackDuration,
                 artist = trackCurrent.artist,
@@ -65,10 +72,12 @@ data class TrackItemRegular(
         }
 
         fun fromLastWithMaxDuration(
+            index: Int,
             trackLast: TrackItemLast,
             maxDuration: Duration,
         ): TrackItemRegular {
             return TrackItemRegular(
+                index = index,
                 startOffset = trackLast.startOffset,
                 duration = maxDuration,
                 artist = trackLast.artist,
@@ -94,6 +103,7 @@ data class TrackItemRegular(
  * Does not have an ending
  */
 data class TrackItemLast(
+    override val index: Int,
     val startOffset: LocalTime,
     val artist: String,
     val track: String,
@@ -102,8 +112,9 @@ data class TrackItemLast(
     override val name: String = "$artist - $track"
 
     companion object {
-        fun from(songCurrent: TrackItemRaw): TrackItemLast {
+        fun from(index: Int, songCurrent: TrackItemRaw): TrackItemLast {
             return TrackItemLast(
+                index = index,
                 startOffset = songCurrent.cutStart,
                 artist = songCurrent.artist,
                 track = songCurrent.track,

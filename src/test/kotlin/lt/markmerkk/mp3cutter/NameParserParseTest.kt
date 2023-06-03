@@ -48,12 +48,14 @@ class NameParserParseTest {
         // Assert
         Assertions.assertThat(result).containsExactly(
             TrackItemRegular(
+                index = 0,
                 startOffset = LocalTime.of(0, 0, 0),
                 duration = Duration.ofSeconds(10),
                 artist = "Moo2",
                 track = "Research1",
             ),
             TrackItemLast(
+                index = 1,
                 startOffset = LocalTime.of(0, 0, 10),
                 artist = "Moo2",
                 track = "Research2",
@@ -76,18 +78,21 @@ class NameParserParseTest {
         // Assert
         Assertions.assertThat(result).containsExactly(
             TrackItemRegular.withStartEnd(
+                index = 0,
                 start = LocalTime.of(0, 0, 0),
                 end = LocalTime.of(0, 5, 20),
                 artist = "San Holo",
                 track = "Show Me",
             ),
             TrackItemRegular.withStartEnd(
+                index = 1,
                 start = LocalTime.of(0, 5, 20),
                 end = LocalTime.of(0, 11, 24),
                 artist = "Kasbo",
                 track = "Over You (feat. Frida Sundemo)",
             ),
             TrackItemLast(
+                index = 2,
                 startOffset = LocalTime.of(0, 11, 24),
                 artist = "Kina",
                 track = "I'm In Love With You",
@@ -110,18 +115,21 @@ class NameParserParseTest {
         // Assert
         Assertions.assertThat(result).containsExactly(
             TrackItemRegular.withStartEnd(
+                index = 0,
                 start = LocalTime.of(0, 0, 0),
                 end = LocalTime.of(0, 3, 30),
                 artist = "San Holo",
                 track = "Show Me",
             ),
             TrackItemRegular.withStartEnd(
+                index = 1,
                 start = LocalTime.of(0, 5, 20),
                 end = LocalTime.of(0, 6, 0),
                 artist = "Kasbo",
                 track = "Over You (feat. Frida Sundemo)",
             ),
             TrackItemRegular.withStartEnd(
+                index = 2,
                 start = LocalTime.of(0, 9, 24),
                 end = LocalTime.of(0, 10, 31),
                 artist = "Kina",
@@ -159,12 +167,14 @@ class NameParserParseTest {
         // Assert
         Assertions.assertThat(result).containsExactly(
             TrackItemRegular.withStartEnd(
+                index = 0,
                 start = LocalTime.of(0, 5, 20),
                 end = LocalTime.of(0, 11, 24),
                 artist = "Test1Test123",
                 track = "Test2",
             ),
             TrackItemLast(
+                index = 1,
                 startOffset = LocalTime.of(0, 11, 24),
                 artist = "KinaResearch",
                 track = "Research1",

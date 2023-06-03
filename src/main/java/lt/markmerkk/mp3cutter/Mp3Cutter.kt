@@ -46,10 +46,11 @@ class Mp3Cutter(
         val ffProbeResult = ffprobe.probe(inputFile.absolutePath)
         Preconditions.checkArgument(inputFile.isFile)
         val cutJobs = tracks
-            .map { track ->
+            .mapIndexed { index, track ->
                 when (track) {
                     is TrackItemLast -> {
                         val regularFromLast = TrackItemRegular.fromLastWithMaxDuration(
+                            index = index,
                             trackLast = track,
                             maxDuration = Duration.ofSeconds(ffProbeResult.format.duration.toLong()),
                         )

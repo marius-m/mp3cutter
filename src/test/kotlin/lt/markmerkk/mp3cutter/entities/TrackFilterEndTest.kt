@@ -13,6 +13,7 @@ internal class TrackFilterEndTest {
     fun valid() {
         // Assemble
         val trackItem = TrackItemRegular(
+            index = 0,
             startOffset = LocalTime.of(0, 10, 0),
             duration = Duration.ofSeconds(60),
             artist = "Moo",
@@ -35,6 +36,7 @@ internal class TrackFilterEndTest {
     fun valid_startFrom0() {
         // Assemble
         val trackItem = TrackItemRegular(
+            index = 0,
             startOffset = LocalTime.of(0, 0, 1),
             duration = Duration.ofSeconds(9),
             artist = "Moo",
@@ -57,6 +59,7 @@ internal class TrackFilterEndTest {
     fun shortDuration_shorterThanDefault() {
         // Assemble
         val trackItem = TrackItemRegular(
+            index = 0,
             startOffset = LocalTime.of(0, 0, 0),
             duration = Duration.ofSeconds(2),
             artist = "Moo",

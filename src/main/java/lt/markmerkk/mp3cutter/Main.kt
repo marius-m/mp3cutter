@@ -47,6 +47,12 @@ class Main {
             shortName = "ext",
             description = "Export format. Default 'mp3'",
         )
+        val overrideFfmpegRootPath by parser.option(
+            ArgType.String,
+            fullName = "override-ffmpeg-path",
+            shortName = "ffmpeg",
+            description = "Overrides the default ffmpeg path. Default '${Mp3Cutter.DEFAULT_FFMPEG_PATH}'",
+        )
         val _isDryRun by parser.option(
             ArgType.Boolean,
             fullName = "dry-run",
@@ -59,6 +65,7 @@ class Main {
         printTracks(tracks)
         if (!isDryRun) {
             processTracks(
+                overrideFfmpegRootPath = overrideFfmpegRootPath,
                 exportFormat = parseExportFormatOrThrow(exportFormatRaw),
                 tracks = tracks,
                 inputFilePathTrack = inputFilePathTrack,
@@ -93,6 +100,7 @@ class Main {
     }
 
     private fun processTracks(
+        overrideFfmpegRootPath: String?,
         exportFormat: ExportFormat,
         tracks: List<TrackItem>,
         inputFilePathTrack: String,
@@ -113,6 +121,7 @@ class Main {
             "Output directory cannot be a file (%s)".format(inputFileTrack.absolutePath),
         )
         val cutter = Mp3Cutter(
+            overrideFfmpegRootPath = overrideFfmpegRootPath,
             inputFile = inputFileTrack,
             outputDir = outputDir,
             exportFormat = exportFormat,

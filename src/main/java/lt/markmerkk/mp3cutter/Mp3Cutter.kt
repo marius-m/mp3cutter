@@ -1,12 +1,7 @@
 package lt.markmerkk.mp3cutter
 
 import com.google.common.base.Preconditions
-import lt.markmerkk.mp3cutter.entities.TrackFilterEnd
-import lt.markmerkk.mp3cutter.entities.TrackFilterStart
-import lt.markmerkk.mp3cutter.entities.TrackItem
-import lt.markmerkk.mp3cutter.entities.TrackItemLast
-import lt.markmerkk.mp3cutter.entities.TrackItemRaw
-import lt.markmerkk.mp3cutter.entities.TrackItemRegular
+import lt.markmerkk.mp3cutter.entities.*
 import net.bramp.ffmpeg.FFmpeg
 import net.bramp.ffmpeg.FFmpegExecutor
 import net.bramp.ffmpeg.FFprobe
@@ -22,6 +17,7 @@ import java.util.concurrent.TimeUnit
 class Mp3Cutter(
     private val inputFile: File,
     private val outputDir: File,
+    private val exportFormat: ExportFormat,
 ) {
     init {
         Preconditions.checkArgument(outputDir.isDirectory)
@@ -35,12 +31,16 @@ class Mp3Cutter(
     fun cut(
         tracks: List<TrackItem>,
     ) {
-        val convertJobs = convertTracksToJobs(tracks = tracks)
+        val convertJobs = convertTracksToJobs(
+            exportFormat = exportFormat,
+            tracks = tracks,
+        )
         convertJobs
             .forEach { it.run() }
     }
 
     private fun convertTracksToJobs(
+        exportFormat: ExportFormat,
         tracks: List<TrackItem>,
     ): List<FFmpegJob> {
         val ffProbeResult = ffprobe.probe(inputFile.absolutePath)
@@ -54,15 +54,16 @@ class Mp3Cutter(
                             trackLast = track,
                             maxDuration = Duration.ofSeconds(ffProbeResult.format.duration.toLong()),
                         )
-                        convertTrackRegular(ffProbeResult, regularFromLast)
+                        convertTrackRegular(exportFormat, ffProbeResult, regularFromLast)
                     }
-                    is TrackItemRegular -> convertTrackRegular(ffProbeResult, track)
+                    is TrackItemRegular -> convertTrackRegular(exportFormat, ffProbeResult, track)
                 }
             }
         return cutJobs
     }
 
     private fun convertTrackRegular(
+        exportFormat: ExportFormat,
         ffProbeResult: FFmpegProbeResult,
         track: TrackItemRegular,
     ): FFmpegJob {
@@ -74,6 +75,7 @@ class Mp3Cutter(
         val filterStart = TrackFilterStart.fromTrack(track)
         val filterEnd = TrackFilterEnd.fromTrack(track)
         return toFFmpegJob(
+            exportFormat = exportFormat,
             ffProbeResult = ffProbeResult,
             targetOutput = targetOutput,
             offsetStart = durationRangeStart,
@@ -84,6 +86,7 @@ class Mp3Cutter(
     }
 
     private fun toFFmpegJob(
+        exportFormat: ExportFormat,
         ffProbeResult: FFmpegProbeResult,
         targetOutput: File,
         offsetStart: Duration,
@@ -101,7 +104,7 @@ class Mp3Cutter(
         val builder: FFmpegBuilder = FFmpegBuilder()
             .setInput(ffProbeResult)
             .addOutput(targetOutput.absolutePath)
-            .setFormat("mp3")
+            .setFormat(exportFormat.toRaw())
             .setFilename(targetOutput.absolutePath)
             .setStartOffset(offsetStart.toMillis(), TimeUnit.MILLISECONDS)
             .setDuration(duration.toMillis(), TimeUnit.MILLISECONDS)

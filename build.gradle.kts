@@ -2,7 +2,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm") version "1.6.21"
-    id("de.jjohannes.extra-java-module-info")  version "0.14"
+    //id("org.gradlex.java-module-dependencies") version "1.4"
+    id("org.gradlex.extra-java-module-info") version "1.4"
     application
 }
 

@@ -1,6 +1,7 @@
 package lt.markmerkk.mp3cutter
 
 import TestUtils
+import lt.markmerkk.mp3cutter.entities.ExportFormat
 import org.junit.jupiter.api.Test
 import java.io.File
 import kotlin.test.Ignore
@@ -8,6 +9,7 @@ import kotlin.test.Ignore
 @Ignore
 internal class Mp3CutterIntegrationTest {
 
+    private val exportFormat: ExportFormat = ExportFormat.asDefault()
     private val nameParser = NameParser()
 
     @Test
@@ -19,6 +21,7 @@ internal class Mp3CutterIntegrationTest {
         val inputFile = TestUtils.fileSource("/Garden-ambience-sound-effect.mp3")
         val outputDir = File("build/")
         val mp3Cutter = Mp3Cutter(
+            exportFormat = exportFormat,
             inputFile = inputFile,
             outputDir = outputDir,
         )
@@ -39,6 +42,7 @@ internal class Mp3CutterIntegrationTest {
         val inputFile = TestUtils.fileSource("/sample1.mp3")
         val outputDir = File("build/")
         val mp3Cutter = Mp3Cutter(
+            exportFormat = exportFormat,
             inputFile = inputFile,
             outputDir = outputDir,
         )

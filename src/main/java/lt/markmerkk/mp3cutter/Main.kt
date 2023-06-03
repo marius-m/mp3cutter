@@ -4,11 +4,13 @@ import com.google.common.base.Preconditions
 import kotlinx.cli.ArgParser
 import kotlinx.cli.ArgType
 import kotlinx.cli.required
+import lt.markmerkk.mp3cutter.entities.ExportFormat
 import lt.markmerkk.mp3cutter.entities.TrackItem
 import org.apache.commons.io.FileUtils
 import org.slf4j.LoggerFactory
 import org.slf4j.bridge.SLF4JBridgeHandler
 import java.io.File
+import java.lang.IllegalArgumentException
 import java.util.logging.LogManager
 
 fun main(args: Array<String>) {
@@ -39,6 +41,12 @@ class Main {
             shortName = "o",
             description = "Output directory where to put extracted files",
         ).required()
+        val exportFormatRaw by parser.option(
+            ArgType.String,
+            fullName = "export-format",
+            shortName = "ext",
+            description = "Export format. Default 'mp3'",
+        )
         val _isDryRun by parser.option(
             ArgType.Boolean,
             fullName = "dry-run",
@@ -51,11 +59,24 @@ class Main {
         printTracks(tracks)
         if (!isDryRun) {
             processTracks(
+                exportFormat = parseExportFormatOrThrow(exportFormatRaw),
                 tracks = tracks,
-                inputFilePathTrack = inputFilePathTrack ?: "",
-                outputDirPath = outputDirPath ?: "",
+                inputFilePathTrack = inputFilePathTrack,
+                outputDirPath = outputDirPath,
             )
         }
+    }
+
+    /**
+     * @return valid [ExportFormat] or throw [IllegalArgumentException]
+     */
+    @Throws(IllegalArgumentException::class)
+    private fun parseExportFormatOrThrow(exportFormatRaw: String?): ExportFormat {
+        val exportFormat = ExportFormat.fromRaw(exportFormatRaw)
+        if (!exportFormat.isValid()) {
+            throw IllegalArgumentException("Invalid export format ($exportFormatRaw)")
+        }
+        return exportFormat
     }
 
     private fun parseTracks(inputFilePathMap: String): List<TrackItem> {
@@ -72,6 +93,7 @@ class Main {
     }
 
     private fun processTracks(
+        exportFormat: ExportFormat,
         tracks: List<TrackItem>,
         inputFilePathTrack: String,
         outputDirPath: String,
@@ -93,6 +115,7 @@ class Main {
         val cutter = Mp3Cutter(
             inputFile = inputFileTrack,
             outputDir = outputDir,
+            exportFormat = exportFormat,
         )
         cutter.cut(tracks)
     }

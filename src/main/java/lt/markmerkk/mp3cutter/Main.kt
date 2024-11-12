@@ -59,7 +59,7 @@ class Main {
             shortName = "d",
             description = "Prints out results from parsing input txt",
         )
-        val isDryRun = _isDryRun != null
+        val isDryRun = _isDryRun == true
         parser.parse(args)
         val tracks = parseTracks(inputFilePathMap = inputFilePathMap)
         printTracks(tracks)

@@ -7,8 +7,6 @@ import java.time.LocalTime
 
 internal class TrackFilterEndTest {
 
-    private val filterDuration = Duration.ofSeconds(5)
-
     @Test
     fun valid() {
         // Assemble
@@ -21,13 +19,13 @@ internal class TrackFilterEndTest {
         )
 
         // Act
-        val result = TrackFilterEnd.fromTrack(trackItem, filterDuration)
+        val result = TrackFilterEnd.fromTrack(trackItem)
 
         // Assert
         Assertions.assertThat(result).isEqualTo(
             TrackFilterEnd(
-                startOffset = LocalTime.of(0, 10, 55),
-                duration = filterDuration,
+                startOffset = LocalTime.of(0, 10, 58),
+                duration = Duration.ofSeconds(2),
             )
         )
     }
@@ -44,13 +42,13 @@ internal class TrackFilterEndTest {
         )
 
         // Act
-        val result = TrackFilterEnd.fromTrack(trackItem, filterDuration)
+        val result = TrackFilterEnd.fromTrack(trackItem)
 
         // Assert
         Assertions.assertThat(result).isEqualTo(
             TrackFilterEnd(
-                startOffset = LocalTime.of(0, 0, 5),
-                duration = filterDuration,
+                startOffset = LocalTime.of(0, 0, 8),
+                duration = Duration.ofSeconds(2),
             )
         )
     }
@@ -67,13 +65,36 @@ internal class TrackFilterEndTest {
         )
 
         // Act
-        val result = TrackFilterEnd.fromTrack(trackItem, filterDuration)
+        val result = TrackFilterEnd.fromTrack(trackItem)
 
         // Assert
         Assertions.assertThat(result).isEqualTo(
             TrackFilterEnd(
                 startOffset = LocalTime.MIN,
                 duration = Duration.ZERO,
+            )
+        )
+    }
+
+    @Test
+    fun duration2xOfDefault() {
+        // Assemble
+        val trackItem = TrackItemRegular(
+            index = 0,
+            startOffset = LocalTime.of(0, 0, 0),
+            duration = Duration.ofSeconds(TrackFilter.DEFAULT_FILTER_SEC.toLong() * 2),
+            artist = "Moo",
+            track = "Research1",
+        )
+
+        // Act
+        val result = TrackFilterEnd.fromTrack(trackItem)
+
+        // Assert
+        Assertions.assertThat(result).isEqualTo(
+            TrackFilterEnd(
+                startOffset = LocalTime.of(0, 0, 2),
+                duration = Duration.ofSeconds(2),
             )
         )
     }

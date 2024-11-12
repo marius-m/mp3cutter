@@ -68,7 +68,7 @@ class Mp3Cutter(
         ffProbeResult: FFmpegProbeResult,
         track: TrackItemRegular,
     ): FFmpegJob {
-        val targetOutput = File(outputDir, "${track.name}.mp3")
+        val targetOutput = File(outputDir, "${track.name}.${exportFormat.name.lowercase()}")
         val durationRangeStart = Duration.between(
             LocalTime.MIN,
             track.startOffset,
@@ -83,6 +83,7 @@ class Mp3Cutter(
             duration = track.duration,
             filterStart = filterStart,
             filterEnd = filterEnd,
+            trackName = track.name,
         )
     }
 
@@ -94,14 +95,31 @@ class Mp3Cutter(
         duration: Duration,
         filterStart: TrackFilterStart,
         filterEnd: TrackFilterEnd,
+        trackName: String,
     ): FFmpegJob {
-        val filterString = "afade=t=in:st=%d:d=%d,afade=t=out:st=%d:d=%d"
+        val filterAudioString = "afade=t=in:st=%d:d=%d,afade=t=out:st=%d:d=%d"
             .format(
                 filterStart.startOffset.toSecondOfDay(),
                 filterStart.duration.toSeconds(),
                 filterEnd.startOffset.toSecondOfDay(),
                 filterStart.duration.toSeconds(),
             )
+        val filterVideoString = when (exportFormat) {
+            ExportFormat.INVALID -> ""
+            ExportFormat.MP3 -> ""
+            ExportFormat.MP4 -> StringBuilder("drawtext=text='${trackName}':x=10:y=10:fontcolor=white:fontsize=24")
+                .append(",")
+                .append(
+                    "fade=t=in:st=%d:d=%d,fade=t=out:st=%d:d=%d"
+                        .format(
+                            filterStart.startOffset.toSecondOfDay(),
+                            filterStart.duration.toSeconds(),
+                            filterEnd.startOffset.toSecondOfDay(),
+                            filterStart.duration.toSeconds(),
+                        )
+                )
+                .toString()
+        }
         val builder: FFmpegBuilder = FFmpegBuilder()
             .setInput(ffProbeResult)
             .addOutput(targetOutput.absolutePath)
@@ -109,8 +127,13 @@ class Mp3Cutter(
             .setFilename(targetOutput.absolutePath)
             .setStartOffset(offsetStart.toMillis(), TimeUnit.MILLISECONDS)
             .setDuration(duration.toMillis(), TimeUnit.MILLISECONDS)
-            .setAudioFilter(filterString)
             .done()
+        if (filterAudioString.isNotEmpty()) {
+            builder.setAudioFilter(filterAudioString)
+        }
+        if (filterVideoString.isNotEmpty()) {
+            builder.setVideoFilter(filterVideoString)
+        }
         return executor.createJob(builder)
     }
 

@@ -8,14 +8,15 @@ sealed class TrackFilter {
     abstract val duration: Duration
 
     companion object {
-        const val DEFAULT_FILTER_SEC = 3
+        const val DEFAULT_FILTER_SEC = 2
         val defaultDuration = Duration.ofSeconds(DEFAULT_FILTER_SEC.toLong())
     }
 }
 
 /**
  * Ads filter at the start of the track
- * Will not apply filter if track duration is lower than [TrackFilter.DEFAULT_FILTER_SEC]
+ * Will not apply filter if track duration is lower than 2x[TrackFilter.DEFAULT_FILTER_SEC]
+ * Note: Due to fade starts / and ends with a filter
  */
 data class TrackFilterStart(
     override val startOffset: LocalTime,
@@ -47,7 +48,8 @@ data class TrackFilterStart(
 
 /**
  * Adds filter at the end of the track
- * Will not apply filter if duration is lower than [TrackFilter.DEFAULT_FILTER_SEC]
+ * Will not apply filter if duration is lower than 2x[TrackFilter.DEFAULT_FILTER_SEC]
+ * Note: Due to fade starts / and ends with a filter
  */
 data class TrackFilterEnd(
     override val startOffset: LocalTime,

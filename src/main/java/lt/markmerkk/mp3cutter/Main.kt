@@ -10,7 +10,6 @@ import org.apache.commons.io.FileUtils
 import org.slf4j.LoggerFactory
 import org.slf4j.bridge.SLF4JBridgeHandler
 import java.io.File
-import java.lang.IllegalArgumentException
 import java.util.logging.LogManager
 
 fun main(args: Array<String>) {

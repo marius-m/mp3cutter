@@ -19,11 +19,11 @@ Gradle 8.10 wrapper (can itself run on JDK 8–23, e.g. the default JDK 21), Kot
 ./gradlew installDist               # runnable script in build/install/mp3cutter/bin
 ```
 
-CLI flags (see `Main.kt`): `--map/-m` cut map file, `--track/-t` input media, `--output/-o` existing output dir, `--export-format/-ext`, `--override-ffmpeg-path/-ffmpeg` (directory containing `ffmpeg` and `ffprobe`; default `/opt/homebrew/bin`, i.e. macOS Homebrew — on Linux this must be overridden, e.g. `/usr/bin`), `--dry-run/-d` (parse and print tracks only).
+CLI flags (see `Main.kt`): `--map/-m` cut map file, `--track/-t` input media, `--output/-o` existing output dir, `--export-format/-ext`, `--override-ffmpeg-path/-ffmpeg` (directory containing `ffmpeg` and `ffprobe`; when omitted, `FfmpegResolver` searches `PATH`, then OS-specific install dirs), `--dry-run/-d` (parse and print tracks only).
 
 Note: `ExportFormat.fromRaw(null)` returns `INVALID`, so omitting `-ext` currently fails on a non-dry run despite the help text saying the default is mp3.
 
-`Mp3CutterIntegrationTest` is not ignored: it invokes real ffmpeg at `DEFAULT_FFMPEG_PATH` and writes output files into `build/`. It will fail on machines without ffmpeg at that path; use `--tests` to run only unit tests in that case.
+`Mp3CutterIntegrationTest` is not ignored: it invokes the real ffmpeg (resolved via `FfmpegResolver`) and writes output files into `build/`. It fails on machines without ffmpeg installed; use `--tests` to run only unit tests in that case.
 
 ## Layout quirks
 

@@ -24,9 +24,9 @@ class Mp3Cutter(
         Preconditions.checkArgument(outputDir.isDirectory)
     }
 
-    private val rootPath = overrideFfmpegRootPath ?: DEFAULT_FFMPEG_PATH
-    private val ffmpeg = FFmpeg("${rootPath}/ffmpeg")
-    private val ffprobe = FFprobe("${rootPath}/ffprobe")
+    private val ffmpegBinaries = FfmpegResolver().resolve(overrideFfmpegRootPath)
+    private val ffmpeg = FFmpeg(ffmpegBinaries.ffmpeg.absolutePath)
+    private val ffprobe = FFprobe(ffmpegBinaries.ffprobe.absolutePath)
     private val executor = FFmpegExecutor(ffmpeg, ffprobe)
 
     fun cut(
@@ -139,6 +139,5 @@ class Mp3Cutter(
 
     companion object {
         private val l = LoggerFactory.getLogger(Mp3Cutter::class.java)
-        const val DEFAULT_FFMPEG_PATH = "/opt/homebrew/bin"
     }
 }

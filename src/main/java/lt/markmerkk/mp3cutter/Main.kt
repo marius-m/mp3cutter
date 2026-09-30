@@ -50,7 +50,7 @@ class Main {
             ArgType.String,
             fullName = "override-ffmpeg-path",
             shortName = "ffmpeg",
-            description = "Overrides the default ffmpeg path. Default '${Mp3Cutter.DEFAULT_FFMPEG_PATH}'",
+            description = "Directory containing ffmpeg and ffprobe. Default: resolved from PATH or common install locations",
         )
         val _isDryRun by parser.option(
             ArgType.Boolean,

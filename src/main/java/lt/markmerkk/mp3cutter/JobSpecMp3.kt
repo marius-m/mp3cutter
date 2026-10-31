@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit
 /**
  * Cuts audio only, with fade in / out
  */
-class JobBuilderMp3 : JobBuilder {
+class JobSpecMp3 : JobBuilder {
     override fun create(
         ffProbeResult: FFmpegProbeResult,
         cut: JobSpec,

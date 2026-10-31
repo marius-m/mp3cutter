@@ -11,10 +11,10 @@ import java.io.File
 import java.time.Duration
 import java.time.LocalTime
 
-internal class JobBuilderMp3CreateTest {
+internal class JobSpecMp3CreateTest {
 
 
-    private val jobBuilder = JobBuilderMp3()
+    private val jobBuilder = JobSpecMp3()
 
     private val ffProbeResult = FFmpegProbeResult().apply {
         format = FFmpegFormat().apply { filename = "/input/input.mp3" }

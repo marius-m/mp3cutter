@@ -16,6 +16,8 @@ examples/cut/run.sh
 ls examples/cut/out
 ```
 
+  For video input set `EXPORT_FORMAT="mp4"`; add `GPU="amd"` to encode the video on an AMD GPU (VAAPI, needs `/dev/dri/renderD128`)
+
 - `inspect-silence/`: detects silences in `sample.mp3` (1:49, 3 tones separated by 2s silence)
   and writes a map file with 3 tracks into `out/tracks.txt`
 

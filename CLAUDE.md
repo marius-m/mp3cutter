@@ -15,13 +15,13 @@ Gradle 8.10 wrapper (can itself run on JDK 8–23, e.g. the default JDK 21), Kot
 ./gradlew test                      # all tests (JUnit Platform)
 ./gradlew test --tests 'lt.markmerkk.mp3cutter.NameParserParseTest'          # single class
 ./gradlew test --tests 'lt.markmerkk.mp3cutter.NameParserParseTest.<method>'   # single method (wildcards allowed)
-./gradlew run --args='cut -m map.txt -t input.mp3 -o outdir [-ext mp3|mp4] [-ffmpeg /path/to/bin] [-d]'
+./gradlew run --args='cut -m map.txt -t input.mp3 -o outdir [-ext mp3|mp4] [--gpu none|amd] [-ffmpeg /path/to/bin] [-d]'
 ./gradlew run --args='inspect-silence -t input.mp3 [-o map.txt] [--noise -30dB] [--min-silence 0.5] [--min-track 30] [-ffmpeg /path/to/bin]'
 ./gradlew installDist               # runnable script in build/install/mp3cutter/bin
 examples/cut/run.sh                 # runnable examples using the installDist binary (see examples/README.md)
 ```
 
-CLI uses kotlinx-cli subcommands registered in `Main.kt`. `cut` flags (see `CutCommand.kt`): `--map/-m` cut map file, `--track/-t` input media, `--output/-o` existing output dir, `--export-format/-ext`, `--override-ffmpeg-path/-ffmpeg` (directory containing `ffmpeg` and `ffprobe`; when omitted, `FfmpegResolver` searches `PATH`, then OS-specific install dirs), `--dry-run/-d` (parse and print tracks only).
+CLI uses kotlinx-cli subcommands registered in `Main.kt`. `cut` flags (see `CutCommand.kt`): `--map/-m` cut map file, `--track/-t` input media, `--output/-o` existing output dir, `--export-format/-ext`, `--gpu` (`none`/`amd`, default `none`; encodes video on GPU, only used for mp4, unknown values are rejected), `--override-ffmpeg-path/-ffmpeg` (directory containing `ffmpeg` and `ffprobe`; when omitted, `FfmpegResolver` searches `PATH`, then OS-specific install dirs), `--dry-run/-d` (parse and print tracks only).
 
 `inspect-silence` flags (see `InspectSilenceCommand.kt`): `--track/-t` input media, `--output/-o` map file to write (refuses to override an existing one; when omitted the map is only printed), `--noise`, `--min-silence` (seconds), `--min-track` (seconds), `-ffmpeg`. kotlinx-cli does not accept `--opt=value`; pass values separated by a space (`--noise -30dB` works).
 
@@ -47,6 +47,7 @@ Note: `ExportFormat.fromRaw(null)` returns `INVALID`, so omitting `-ext` current
    - `-ss`/`-t` from start offset and duration; output `<outputDir>/<name>.<format>`.
    - Fade in/out audio filters (`afade`) derived from `TrackFilterStart`/`TrackFilterEnd` (default 2s, skipped for short tracks).
    - For `ExportFormat.MP4`, also a video filter: `drawtext` overlay of the track name plus video `fade` in/out.
+   - Arguments per export are built by a `JobBuilder` picked by `JobBuilder.fromFormat(exportFormat, gpu)`: `JobSpecMp3`, `JobSpecMp4`, or `JobSpecMp4Gpu` (adds `Gpu` global args, filter suffix and video codec, e.g. AMD VAAPI `h264_vaapi`). Per track values are passed as `JobSpec`.
    - Jobs run sequentially.
 4. **`InspectSilenceCommand`** generates a map file instead of cutting: `SilenceDetector` runs `ffmpeg … -vn -af silencedetect … -f null -` as a plain process (the bramp wrapper doesn't expose filter output), then `SilenceLogParser` → `SilenceIntervalsUtils.merge` → `SilenceTracklistGenerator` (audio between silences, rounded to seconds, short parts dropped) → `TracklistFormatter` (`H:mm:ss H:mm:ss <input file name> - Track N`, readable by `NameParser`).
 

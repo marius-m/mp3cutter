@@ -9,6 +9,7 @@ MAP="tracks.txt"          # cut map, relative to this folder
 TRACK="sample.mp3"        # input media, relative to this folder
 OUTPUT="out"              # output folder, relative to this folder, created if missing
 EXPORT_FORMAT="mp3"       # mp3 | mp4
+GPU="none"                # none | amd, encodes video on GPU, only used for mp4
 DRY_RUN="false"           # true = only parse and print tracks
 FFMPEG_DIR=""             # directory with ffmpeg + ffprobe, empty = find automatically
 
@@ -31,6 +32,7 @@ ARGS=(
     -t "$SCRIPT_DIR/$TRACK"
     -o "$SCRIPT_DIR/$OUTPUT"
     -ext "$EXPORT_FORMAT"
+    --gpu "$GPU"
 )
 if [[ "$DRY_RUN" == "true" ]]; then
     ARGS+=(-d)

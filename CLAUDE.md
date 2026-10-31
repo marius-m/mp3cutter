@@ -15,11 +15,11 @@ Gradle 8.10 wrapper (can itself run on JDK 8–23, e.g. the default JDK 21), Kot
 ./gradlew test                      # all tests (JUnit Platform)
 ./gradlew test --tests 'lt.markmerkk.mp3cutter.NameParserParseTest'          # single class
 ./gradlew test --tests 'lt.markmerkk.mp3cutter.NameParserParseTest.<method>'   # single method (wildcards allowed)
-./gradlew run --args='-m map.txt -t input.mp3 -o outdir [-ext mp3|mp4] [-ffmpeg /path/to/bin] [-d]'
+./gradlew run --args='cut -m map.txt -t input.mp3 -o outdir [-ext mp3|mp4] [-ffmpeg /path/to/bin] [-d]'
 ./gradlew installDist               # runnable script in build/install/mp3cutter/bin
 ```
 
-CLI flags (see `Main.kt`): `--map/-m` cut map file, `--track/-t` input media, `--output/-o` existing output dir, `--export-format/-ext`, `--override-ffmpeg-path/-ffmpeg` (directory containing `ffmpeg` and `ffprobe`; when omitted, `FfmpegResolver` searches `PATH`, then OS-specific install dirs), `--dry-run/-d` (parse and print tracks only).
+CLI uses kotlinx-cli subcommands registered in `Main.kt`. `cut` flags (see `CutCommand.kt`): `--map/-m` cut map file, `--track/-t` input media, `--output/-o` existing output dir, `--export-format/-ext`, `--override-ffmpeg-path/-ffmpeg` (directory containing `ffmpeg` and `ffprobe`; when omitted, `FfmpegResolver` searches `PATH`, then OS-specific install dirs), `--dry-run/-d` (parse and print tracks only).
 
 Note: `ExportFormat.fromRaw(null)` returns `INVALID`, so omitting `-ext` currently fails on a non-dry run despite the help text saying the default is mp3.
 
@@ -33,7 +33,7 @@ Note: `ExportFormat.fromRaw(null)` returns `INVALID`, so omitting `-ext` current
 
 ## Architecture / data flow
 
-1. **`Main`** parses args (kotlinx-cli), reads the map file, calls `NameParser`, logs the parsed tracks, and (unless dry-run) runs `Mp3Cutter`.
+1. **`Main`** dispatches to a subcommand (kotlinx-cli). **`CutCommand`** reads the map file, calls `NameParser`, logs the parsed tracks, and (unless dry-run) runs `Mp3Cutter`.
 2. **`NameParser`** turns map text into `List<TrackItem>`:
    - Each line matches `^<time>( <endTime>)? <artist><sep><track>$` (separator default `-`). Lines that don't match, or whose end time precedes start, are silently dropped.
    - Times are parsed by `TimeUtils`, which tries `TimeParser` implementations in order (`TimeParserHours` = `H:mm:ss`, then `TimeParserMinutesOnly` = `m:ss`) and returns a `LocalTime` used as an offset from the start of the file.

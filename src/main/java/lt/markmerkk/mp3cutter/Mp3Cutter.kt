@@ -5,14 +5,11 @@ import lt.markmerkk.mp3cutter.entities.*
 import net.bramp.ffmpeg.FFmpeg
 import net.bramp.ffmpeg.FFmpegExecutor
 import net.bramp.ffmpeg.FFprobe
-import net.bramp.ffmpeg.builder.FFmpegBuilder
 import net.bramp.ffmpeg.job.FFmpegJob
 import net.bramp.ffmpeg.probe.FFmpegProbeResult
-import org.slf4j.LoggerFactory
 import java.io.File
 import java.time.Duration
 import java.time.LocalTime
-import java.util.concurrent.TimeUnit
 
 class Mp3Cutter(
     private val overrideFfmpegRootPath: String? = null,
@@ -23,12 +20,9 @@ class Mp3Cutter(
 ) {
     init {
         Preconditions.checkArgument(outputDir.isDirectory)
-        if (gpu != Gpu.NONE && exportFormat != ExportFormat.MP4) {
-            l.warn("GPU ({}) only encodes video, ignored for export format {}", gpu.toRaw(), exportFormat.toRaw())
-        }
     }
 
-    private val gpuVideo: Gpu = if (exportFormat == ExportFormat.MP4) gpu else Gpu.NONE
+    private val jobBuilder: JobBuilder = JobBuilder.fromFormat(exportFormat, gpu)
 
     private val ffmpegBinaries = FfmpegResolver().resolve(overrideFfmpegRootPath)
     private val ffmpeg = FFmpeg(ffmpegBinaries.ffmpeg.absolutePath)
@@ -79,82 +73,14 @@ class Mp3Cutter(
             LocalTime.MIN,
             track.startOffset,
         )
-        val filterStart = TrackFilterStart.fromTrack(track)
-        val filterEnd = TrackFilterEnd.fromTrack(track)
-        return toFFmpegJob(
-            exportFormat = exportFormat,
-            ffProbeResult = ffProbeResult,
+        val jobSpec = JobSpec(
             targetOutput = targetOutput,
             offsetStart = durationRangeStart,
             duration = track.duration,
-            filterStart = filterStart,
-            filterEnd = filterEnd,
+            filterStart = TrackFilterStart.fromTrack(track),
+            filterEnd = TrackFilterEnd.fromTrack(track),
             trackName = track.name,
         )
-    }
-
-    private fun toFFmpegJob(
-        exportFormat: ExportFormat,
-        ffProbeResult: FFmpegProbeResult,
-        targetOutput: File,
-        offsetStart: Duration,
-        duration: Duration,
-        filterStart: TrackFilterStart,
-        filterEnd: TrackFilterEnd,
-        trackName: String,
-    ): FFmpegJob {
-        val filterAudioString = "afade=t=in:st=%d:d=%d,afade=t=out:st=%d:d=%d"
-            .format(
-                filterStart.startOffset.toSecondOfDay(),
-                filterStart.duration.toSeconds(),
-                filterEnd.startOffset.toSecondOfDay(),
-                filterStart.duration.toSeconds(),
-            )
-        val filterVideoString = when (exportFormat) {
-            ExportFormat.INVALID -> ""
-            ExportFormat.MP3 -> ""
-            ExportFormat.MP4 -> StringBuilder("drawtext=text='${trackName}':x=10:y=10:fontcolor=white:fontsize=24")
-                .append(",")
-                .append(
-                    "fade=t=in:st=%d:d=%d,fade=t=out:st=%d:d=%d"
-                        .format(
-                            filterStart.startOffset.toSecondOfDay(),
-                            filterStart.duration.toSeconds(),
-                            filterEnd.startOffset.toSecondOfDay(),
-                            filterStart.duration.toSeconds(),
-                        )
-                )
-                .apply {
-                    if (gpuVideo.videoFilterSuffix.isNotEmpty()) {
-                        append(",").append(gpuVideo.videoFilterSuffix)
-                    }
-                }
-                .toString()
-        }
-        val outputBuilder = FFmpegBuilder()
-            .setInput(ffProbeResult)
-            .addOutput(targetOutput.absolutePath)
-            .setFormat(exportFormat.toRaw())
-            .setFilename(targetOutput.absolutePath)
-            .setStartOffset(offsetStart.toMillis(), TimeUnit.MILLISECONDS)
-            .setDuration(duration.toMillis(), TimeUnit.MILLISECONDS)
-        if (gpuVideo.videoCodec != null) {
-            outputBuilder.setVideoCodec(gpuVideo.videoCodec)
-        }
-        val builder: FFmpegBuilder = outputBuilder.done()
-        if (gpuVideo.globalArgs.isNotEmpty()) {
-            builder.addExtraArgs(*gpuVideo.globalArgs.toTypedArray())
-        }
-        if (filterAudioString.isNotEmpty()) {
-            builder.setAudioFilter(filterAudioString)
-        }
-        if (filterVideoString.isNotEmpty()) {
-            builder.setVideoFilter(filterVideoString)
-        }
-        return executor.createJob(builder)
-    }
-
-    companion object {
-        private val l = LoggerFactory.getLogger(Mp3Cutter::class.java)
+        return executor.createJob(jobBuilder.create(ffProbeResult, jobSpec))
     }
 }

@@ -19,10 +19,16 @@ class Mp3Cutter(
     private val inputFile: File,
     private val outputDir: File,
     private val exportFormat: ExportFormat,
+    private val gpu: Gpu = Gpu.NONE,
 ) {
     init {
         Preconditions.checkArgument(outputDir.isDirectory)
+        if (gpu != Gpu.NONE && exportFormat != ExportFormat.MP4) {
+            l.warn("GPU ({}) only encodes video, ignored for export format {}", gpu.toRaw(), exportFormat.toRaw())
+        }
     }
+
+    private val gpuVideo: Gpu = if (exportFormat == ExportFormat.MP4) gpu else Gpu.NONE
 
     private val ffmpegBinaries = FfmpegResolver().resolve(overrideFfmpegRootPath)
     private val ffmpeg = FFmpeg(ffmpegBinaries.ffmpeg.absolutePath)
@@ -118,16 +124,27 @@ class Mp3Cutter(
                             filterStart.duration.toSeconds(),
                         )
                 )
+                .apply {
+                    if (gpuVideo.videoFilterSuffix.isNotEmpty()) {
+                        append(",").append(gpuVideo.videoFilterSuffix)
+                    }
+                }
                 .toString()
         }
-        val builder: FFmpegBuilder = FFmpegBuilder()
+        val outputBuilder = FFmpegBuilder()
             .setInput(ffProbeResult)
             .addOutput(targetOutput.absolutePath)
             .setFormat(exportFormat.toRaw())
             .setFilename(targetOutput.absolutePath)
             .setStartOffset(offsetStart.toMillis(), TimeUnit.MILLISECONDS)
             .setDuration(duration.toMillis(), TimeUnit.MILLISECONDS)
-            .done()
+        if (gpuVideo.videoCodec != null) {
+            outputBuilder.setVideoCodec(gpuVideo.videoCodec)
+        }
+        val builder: FFmpegBuilder = outputBuilder.done()
+        if (gpuVideo.globalArgs.isNotEmpty()) {
+            builder.addExtraArgs(*gpuVideo.globalArgs.toTypedArray())
+        }
         if (filterAudioString.isNotEmpty()) {
             builder.setAudioFilter(filterAudioString)
         }

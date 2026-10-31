@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit
  * GPU args go before input, its filter suffix is appended to the video filter chain
  */
 class JobSpecMp4Gpu(
-    private val gpu: Gpu,
+    val gpu: Gpu,
 ) : JobBuilder {
     override fun create(
         ffProbeResult: FFmpegProbeResult,

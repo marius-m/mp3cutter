@@ -1,0 +1,98 @@
+▶ ffmpeg -i dark-jazz2.webm -af silencedetect=noise=-30dB:d=0.5 -f null -
+ffmpeg version 6.1.1-3ubuntu5 Copyright (c) 2000-2023 the FFmpeg developers
+  built with gcc 13 (Ubuntu 13.2.0-23ubuntu3)
+  configuration: --prefix=/usr --extra-version=3ubuntu5 --toolchain=hardened --libdir=/usr/lib/x86_64-linux-gnu --incdir=/usr/include/x86_64-linux-gnu --arch=amd64 --enable-gpl --disable-stripping --disable-omx --enable-gnutls --enable-libaom --enable-libass --enable-libbs2b --enable-libcaca --enable-libcdio --enable-libcodec2 --enable-libdav1d --enable-libflite --enable-libfontconfig --enable-libfreetype --enable-libfribidi --enable-libglslang --enable-libgme --enable-libgsm --enable-libharfbuzz --enable-libmp3lame --enable-libmysofa --enable-libopenjpeg --enable-libopenmpt --enable-libopus --enable-librubberband --enable-libshine --enable-libsnappy --enable-libsoxr --enable-libspeex --enable-libtheora --enable-libtwolame --enable-libvidstab --enable-libvorbis --enable-libvpx --enable-libwebp --enable-libx265 --enable-libxml2 --enable-libxvid --enable-libzimg --enable-openal --enable-opencl --enable-opengl --disable-sndio --enable-libvpl --disable-libmfx --enable-libdc1394 --enable-libdrm --enable-libiec61883 --enable-chromaprint --enable-frei0r --enable-ladspa --enable-libbluray --enable-libjack --enable-libpulse --enable-librabbitmq --enable-librist --enable-libsrt --enable-libssh --enable-libsvtav1 --enable-libx264 --enable-libzmq --enable-libzvbi --enable-lv2 --enable-sdl2 --enable-libplacebo --enable-librav1e --enable-pocketsphinx --enable-librsvg --enable-libjxl --enable-shared
+  WARNING: library configuration mismatch
+  avcodec     configuration: --prefix=/usr --extra-version=3ubuntu5 --toolchain=hardened --libdir=/usr/lib/x86_64-linux-gnu --incdir=/usr/include/x86_64-linux-gnu --arch=amd64 --enable-gpl --disable-stripping --disable-omx --enable-gnutls --enable-libaom --enable-libass --enable-libbs2b --enable-libcaca --enable-libcdio --enable-libcodec2 --enable-libdav1d --enable-libflite --enable-libfontconfig --enable-libfreetype --enable-libfribidi --enable-libglslang --enable-libgme --enable-libgsm --enable-libharfbuzz --enable-libmp3lame --enable-libmysofa --enable-libopenjpeg --enable-libopenmpt --enable-libopus --enable-librubberband --enable-libshine --enable-libsnappy --enable-libsoxr --enable-libspeex --enable-libtheora --enable-libtwolame --enable-libvidstab --enable-libvorbis --enable-libvpx --enable-libwebp --enable-libx265 --enable-libxml2 --enable-libxvid --enable-libzimg --enable-openal --enable-opencl --enable-opengl --disable-sndio --enable-libvpl --disable-libmfx --enable-libdc1394 --enable-libdrm --enable-libiec61883 --enable-chromaprint --enable-frei0r --enable-ladspa --enable-libbluray --enable-libjack --enable-libpulse --enable-librabbitmq --enable-librist --enable-libsrt --enable-libssh --enable-libsvtav1 --enable-libx264 --enable-libzmq --enable-libzvbi --enable-lv2 --enable-sdl2 --enable-libplacebo --enable-librav1e --enable-pocketsphinx --enable-librsvg --enable-libjxl --enable-shared --enable-version3 --disable-doc --disable-programs --disable-static --enable-libaribb24 --enable-libopencore_amrnb --enable-libopencore_amrwb --enable-libtesseract --enable-libvo_amrwbenc --enable-libsmbclient
+  libavutil      58. 29.100 / 58. 29.100
+  libavcodec     60. 31.102 / 60. 31.102
+  libavformat    60. 16.100 / 60. 16.100
+  libavdevice    60.  3.100 / 60.  3.100
+  libavfilter     9. 12.100 /  9. 12.100
+  libswscale      7.  5.100 /  7.  5.100
+  libswresample   4. 12.100 /  4. 12.100
+  libpostproc    57.  3.100 / 57.  3.100
+Input #0, matroska,webm, from 'dark-jazz2.webm':
+  Metadata:
+    COMPATIBLE_BRANDS: iso6mp41
+    MAJOR_BRAND     : dash
+    MINOR_VERSION   : 0
+    ENCODER         : Lavf60.16.100
+  Duration: 01:37:15.25, start: 0.000000, bitrate: 2610 kb/s
+  Stream #0:0: Video: vp9 (Profile 0), yuv420p(tv, bt709), 1920x1080, SAR 1:1 DAR 16:9, 30 fps, 30 tbr, 1k tbn (default)
+    Metadata:
+      HANDLER_NAME    : ISO Media file produced by Google Inc. Created on: 10/17/2026.
+      VENDOR_ID       : [0][0][0][0]
+      DURATION        : 01:37:15.200000000
+  Stream #0:1(eng): Audio: opus, 48000 Hz, stereo, fltp (default)
+    Metadata:
+      DURATION        : 01:37:15.248000000
+Stream mapping:
+  Stream #0:0 -> #0:0 (vp9 (native) -> wrapped_avframe (native))
+  Stream #0:1 -> #0:1 (opus (native) -> pcm_s16le (native))
+Press [q] to stop, [?] for help
+Output #0, null, to 'pipe:':
+  Metadata:
+    COMPATIBLE_BRANDS: iso6mp41
+    MAJOR_BRAND     : dash
+    MINOR_VERSION   : 0
+    encoder         : Lavf60.16.100
+  Stream #0:0: Video: wrapped_avframe, yuv420p(tv, bt709, progressive), 1920x1080 [SAR 1:1 DAR 16:9], q=2-31, 200 kb/s, 30 fps, 30 tbn (default)
+    Metadata:
+      HANDLER_NAME    : ISO Media file produced by Google Inc. Created on: 10/17/2026.
+      VENDOR_ID       : [0][0][0][0]
+      DURATION        : 01:37:15.200000000
+      encoder         : Lavc60.31.102 wrapped_avframe
+  Stream #0:1(eng): Audio: pcm_s16le, 48000 Hz, stereo, s16, 1536 kb/s (default)
+    Metadata:
+      DURATION        : 01:37:15.248000000
+      encoder         : Lavc60.31.102 pcm_s16le
+[silencedetect @ 0x65328917e540] silence_start: 0.007bitrate=N/A speed=18.5x
+[silencedetect @ 0x65328917e540] silence_end: 0.531792 | silence_duration: 0.524792
+[silencedetect @ 0x65328917e540] silence_start: 0.531813
+[silencedetect @ 0x65328917e540] silence_end: 1.86769 | silence_duration: 1.33587
+[silencedetect @ 0x65328917e540] silence_start: 259.042trate=N/A speed=20.5x
+[silencedetect @ 0x65328917e540] silence_end: 261.156 | silence_duration: 2.11454
+[silencedetect @ 0x65328917e540] silence_start: 548.075trate=N/A speed=20.5x
+[silencedetect @ 0x65328917e540] silence_end: 550.487 | silence_duration: 2.4121
+[silencedetect @ 0x65328917e540] silence_start: 861.197trate=N/A speed=20.5x
+[silencedetect @ 0x65328917e540] silence_end: 865.13 | silence_duration: 3.93304
+[silencedetect @ 0x65328917e540] silence_start: 1156.02trate=N/A speed=20.5x
+[silencedetect @ 0x65328917e540] silence_end: 1159.94 | silence_duration: 3.92135
+[silencedetect @ 0x65328917e540] silence_start: 1437.48trate=N/A speed=20.4x
+[silencedetect @ 0x65328917e540] silence_end: 1439.84 | silence_duration: 2.35906
+[silencedetect @ 0x65328917e540] silence_start: 1738.03trate=N/A speed=20.4x
+[silencedetect @ 0x65328917e540] silence_end: 1740.8 | silence_duration: 2.77113
+[silencedetect @ 0x65328917e540] silence_start: 2030.43trate=N/A speed=20.4x
+[silencedetect @ 0x65328917e540] silence_end: 2035.17 | silence_duration: 4.73633
+[silencedetect @ 0x65328917e540] silence_start: 2355.86trate=N/A speed=20.4x
+[silencedetect @ 0x65328917e540] silence_end: 2360.99 | silence_duration: 5.12737
+[silencedetect @ 0x65328917e540] silence_start: 2618.95trate=N/A speed=20.4x
+[silencedetect @ 0x65328917e540] silence_end: 2621.67 | silence_duration: 2.71248
+[silencedetect @ 0x65328917e540] silence_start: 2916.1itrate=N/A speed=20.4x
+[silencedetect @ 0x65328917e540] silence_end: 2918.13 | silence_duration: 2.02962
+[silencedetect @ 0x65328917e540] silence_start: 2918.13
+[silencedetect @ 0x65328917e540] silence_end: 2919.46 | silence_duration: 1.33587
+[silencedetect @ 0x65328917e540] silence_start: 3176.64trate=N/A speed=20.4x
+[silencedetect @ 0x65328917e540] silence_end: 3178.75 | silence_duration: 2.11346
+[silencedetect @ 0x65328917e540] silence_start: 3465.67itrate=N/A speed=20.4x
+[silencedetect @ 0x65328917e540] silence_end: 3468.08 | silence_duration: 2.41219
+[silencedetect @ 0x65328917e540] silence_start: 3778.81itrate=N/A speed=20.4x
+[silencedetect @ 0x65328917e540] silence_end: 3782.72 | silence_duration: 3.9175
+[silencedetect @ 0x65328917e540] silence_start: 4073.61itrate=N/A speed=20.4x
+[silencedetect @ 0x65328917e540] silence_end: 4077.53 | silence_duration: 3.92137
+[silencedetect @ 0x65328917e540] silence_start: 4355.08itrate=N/A speed=20.4x
+[silencedetect @ 0x65328917e540] silence_end: 4357.44 | silence_duration: 2.35885
+[silencedetect @ 0x65328917e540] silence_start: 4655.62itrate=N/A speed=20.4x
+[silencedetect @ 0x65328917e540] silence_end: 4658.4 | silence_duration: 2.77113
+[silencedetect @ 0x65328917e540] silence_start: 4948.11itrate=N/A speed=20.4x
+[silencedetect @ 0x65328917e540] silence_end: 4952.81 | silence_duration: 4.69281
+[silencedetect @ 0x65328917e540] silence_start: 5273.46itrate=N/A speed=20.4x
+[silencedetect @ 0x65328917e540] silence_end: 5278.59 | silence_duration: 5.12737
+[silencedetect @ 0x65328917e540] silence_start: 5536.5bitrate=N/A speed=20.4x
+[silencedetect @ 0x65328917e540] silence_end: 5539.26 | silence_duration: 2.76277
+[silencedetect @ 0x65328917e540] silence_start: 5833.69itrate=N/A speed=20.4x
+[out#0/null @ 0x6532890cc0c0] video:82058kB audio:1094106kB subtitle:0kB other streams:0kB global headers:0kB muxing overhead: unknown
+frame=175056 fps=612 q=-0.0 Lsize=N/A time=01:37:15.22 bitrate=N/A speed=20.4x
+[silencedetect @ 0x65328917e540] silence_end: 5835.24 | silence_duration: 1.54885
+ffmpeg -i dark-jazz2.webm -af silencedetect=noise=-30dB:d=0.5 -f null -  1039.74s user 82.56s system 392% cpu 4:46.29 total

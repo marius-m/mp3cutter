@@ -15,3 +15,14 @@ Scripts use the built binary in `build/install/mp3cutter/bin/`, build it first (
 examples/cut/run.sh
 ls examples/cut/out
 ```
+
+- `inspect-silence/`: detects silences in `sample.mp3` (1:49, 3 tones separated by 2s silence)
+  and writes a map file with 3 tracks into `out/tracks.txt`
+
+```sh
+examples/inspect-silence/run.sh
+cat examples/inspect-silence/out/tracks.txt
+```
+
+The generated map can be fed straight to `cut`, e.g. set `MAP="../inspect-silence/out/tracks.txt"`
+and `TRACK="../inspect-silence/sample.mp3"` in `cut/run.sh`.

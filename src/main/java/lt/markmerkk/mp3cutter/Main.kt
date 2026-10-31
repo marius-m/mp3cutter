@@ -18,6 +18,7 @@ class Main {
         val parser = ArgParser("mp3cutter")
         parser.subcommands(
             CutCommand(),
+            InspectSilenceCommand(),
         )
         parser.parse(args)
     }

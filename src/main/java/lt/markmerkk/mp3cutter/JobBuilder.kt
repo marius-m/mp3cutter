@@ -44,7 +44,6 @@ interface JobBuilder {
 
         /**
          * Audio fade in at the start and fade out at the end of the track
-         * Note: fade out uses start filter duration, kept as is from [Mp3Cutter]
          */
         fun audioFilterFade(
             filterStart: TrackFilterStart,
@@ -55,13 +54,12 @@ interface JobBuilder {
                     filterStart.startOffset.toSecondOfDay(),
                     filterStart.duration.toSeconds(),
                     filterEnd.startOffset.toSecondOfDay(),
-                    filterStart.duration.toSeconds(),
+                    filterEnd.duration.toSeconds(),
                 )
         }
 
         /**
          * Track name drawn on top left, video fade in at the start and fade out at the end of the track
-         * Note: fade out uses start filter duration, kept as is from [Mp3Cutter]
          */
         fun videoFilterOverlay(
             trackName: String,
@@ -76,7 +74,7 @@ interface JobBuilder {
                             filterStart.startOffset.toSecondOfDay(),
                             filterStart.duration.toSeconds(),
                             filterEnd.startOffset.toSecondOfDay(),
-                            filterStart.duration.toSeconds(),
+                            filterEnd.duration.toSeconds(),
                         )
                 )
                 .toString()
